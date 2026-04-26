@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0">
+  <diagram name="Arquitetura Unificada V2" id="unified-arch-002">
+    <mxGraphModel dx="1022" dy="564" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3000" pageHeight="2000" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="InterfaceDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#f9f9f9;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br/&gt;&lt;b&gt;InterfaceDAO&amp;lt;T&amp;gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: T): void&lt;br/&gt;+ alterar(obj: T): void&lt;br/&gt;+ excluir(obj: T): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;T&amp;gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="130" width="220" x="1340" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Conexao" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#f9f9f9;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Singleton&amp;gt;&amp;gt;&lt;/i&gt;&lt;br/&gt;&lt;b&gt;Conexao&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- instancia: Conexao (static)&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- Conexao()&lt;br/&gt;+ getInstance(): Conexao (static)&lt;br/&gt;+ getConnection(): Connection&lt;br/&gt;+ closeConn(): void&lt;/p&gt;" vertex="1">
+          <mxGeometry height="150" width="220" x="1600" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UsuarioDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;UsuarioDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Usuario): void&lt;br/&gt;+ alterar(obj: Usuario): void&lt;br/&gt;+ excluir(obj: Usuario): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Usuario&amp;gt;&lt;br/&gt;+ autenticar(email, senha): Usuario&lt;/p&gt;" vertex="1">
+          <mxGeometry height="150" width="220" x="300" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="ProprietarioDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;ProprietarioDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Proprietario): void&lt;br/&gt;+ alterar(obj: Proprietario): void&lt;br/&gt;+ excluir(obj: Proprietario): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Prop.&amp;gt;&lt;br/&gt;+ consultarPorCPF(cpf): Proprietario&lt;br/&gt;+ consultarPorEmail(email): Proprietario&lt;/p&gt;" vertex="1">
+          <mxGeometry height="170" width="220" x="560" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="AdminDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;AdminDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Admin): void&lt;br/&gt;+ alterar(obj: Admin): void&lt;br/&gt;+ excluir(obj: Admin): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Admin&amp;gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="150" width="220" x="820" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="PropriedadeDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;PropriedadeDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Propriedade): void&lt;br/&gt;+ alterar(obj: Propriedade): void&lt;br/&gt;+ excluir(obj: Propriedade): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Propriedade&amp;gt;&lt;br/&gt;+ consultarPorProprietario(id): List&lt;/p&gt;" vertex="1">
+          <mxGeometry height="160" width="220" x="1080" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="ComunidadeDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;ComunidadeDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Comunidade): void&lt;br/&gt;+ alterar(obj: Comunidade): void&lt;br/&gt;+ excluir(obj: Comunidade): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Comunidade&amp;gt;&lt;br/&gt;+ consultarPendentes(): List&lt;br/&gt;+ consultarPorNome(nome): List&lt;/p&gt;" vertex="1">
+          <mxGeometry height="170" width="220" x="1340" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="SementeDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;SementeDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Semente): void&lt;br/&gt;+ alterar(obj: Semente): void&lt;br/&gt;+ excluir(obj: Semente): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Semente&amp;gt;&lt;br/&gt;+ consultarPorProprietario(id): List&lt;br/&gt;+ consultarPorDisponibilidade(disp): List&lt;/p&gt;" vertex="1">
+          <mxGeometry height="170" width="220" x="1600" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="EstoqueDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;EstoqueDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Estoque): void&lt;br/&gt;+ alterar(obj: Estoque): void&lt;br/&gt;+ excluir(obj: Estoque): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Estoque&amp;gt;&lt;br/&gt;+ consultarPorSemente(id): List&lt;/p&gt;" vertex="1">
+          <mxGeometry height="160" width="220" x="1860" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="PedidoDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;PedidoDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Pedido): void&lt;br/&gt;+ alterar(obj: Pedido): void&lt;br/&gt;+ excluir(obj: Pedido): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Pedido&amp;gt;&lt;br/&gt;+ consultarPorProprietario(id): List&lt;br/&gt;+ consultarPorUsuario(id): List&lt;br/&gt;+ consultarPorStatus(status): List&lt;/p&gt;" vertex="1">
+          <mxGeometry height="180" width="220" x="2120" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="ItensDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;ItensDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Itens): void&lt;br/&gt;+ alterar(obj: Itens): void&lt;br/&gt;+ excluir(obj: Itens): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Itens&amp;gt;&lt;br/&gt;+ consultarPorPedido(id): List&lt;/p&gt;" vertex="1">
+          <mxGeometry height="160" width="220" x="2380" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="NotificacaoDAO" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#ffffff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;NotificacaoDAO&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- sql: String&lt;br/&gt;- conn: Connection&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ adicionar(obj: Notificacao): void&lt;br/&gt;+ alterar(obj: Notificacao): void&lt;br/&gt;+ excluir(obj: Notificacao): void&lt;br/&gt;+ consultar(filtro: Map): List&amp;lt;Notificacao&amp;gt;&lt;br/&gt;+ consultarNaoLidas(id): List&lt;br/&gt;+ marcarComoLida(id): void&lt;/p&gt;" vertex="1">
+          <mxGeometry height="170" width="220" x="2640" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="Pessoa" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Pessoa&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idPessoa: String&lt;br/&gt;- nome: String&lt;br/&gt;- cpf: String&lt;br/&gt;- email: String&lt;br/&gt;- senhaHash: String&lt;br/&gt;- telefone: String&lt;br/&gt;- logradouro: Logradouro&lt;/p&gt;" vertex="1">
+          <mxGeometry height="150" width="220" x="190" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="Propriedade" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Propriedade&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idPropriedade: String&lt;br/&gt;- nome: String&lt;br/&gt;- tamanhoHectares: Double&lt;br/&gt;- logradouro: Logradouro&lt;/p&gt;" vertex="1">
+          <mxGeometry height="110" width="220" x="900" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="Comunidade" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Comunidade&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idComunidade: String&lt;br/&gt;- nome: String&lt;br/&gt;- status: StatusComunidade&lt;br/&gt;- dataSolicitacao: DateTime&lt;/p&gt;" vertex="1">
+          <mxGeometry height="110" width="220" x="1250" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="Semente" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Semente&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idSemente: String&lt;br/&gt;- nomePopular: String&lt;br/&gt;- nomeCientifico: String&lt;br/&gt;- tipo: TipoSemente&lt;br/&gt;- disponibilidade: Disponibilidade&lt;br/&gt;- quantidadeEstoque: Double&lt;br/&gt;- pesoEstoque: Double&lt;/p&gt;" vertex="1">
+          <mxGeometry height="150" width="220" x="1560" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="Estoque" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Estoque&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idEstoque: String&lt;br/&gt;- tipo: TipoMovimentacao&lt;br/&gt;- quantidade: Double&lt;br/&gt;- dataMovimentacao: DateTime&lt;/p&gt;" vertex="1">
+          <mxGeometry height="110" width="220" x="1860" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="Pedido" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Pedido&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idPedido: String&lt;br/&gt;- tipoPedido: TipoPedido&lt;br/&gt;- status: StatusPedido&lt;br/&gt;- dataPedido: DateTime&lt;br/&gt;- mensagemOpcional: String&lt;/p&gt;" vertex="1">
+          <mxGeometry height="130" width="220" x="2120" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="Notificacao" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Notificacao&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idNotificacao: String&lt;br/&gt;- titulo: String&lt;br/&gt;- lida: Boolean&lt;br/&gt;- dataGeracao: DateTime&lt;/p&gt;" vertex="1">
+          <mxGeometry height="110" width="220" x="2640" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="Usuario" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Usuario&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idUsuario: String&lt;/p&gt;" vertex="1">
+          <mxGeometry height="70" width="220" x="20" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="Proprietario" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Proprietario&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idProprietario: String&lt;br/&gt;- rg: String&lt;br/&gt;- exibirNoSitePublico: Boolean&lt;/p&gt;" vertex="1">
+          <mxGeometry height="90" width="220" x="300" y="1220" as="geometry" />
+        </mxCell>
+        <mxCell id="Admin" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Admin&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idAdmin: String&lt;br/&gt;- nivelAcesso: String&lt;/p&gt;" vertex="1">
+          <mxGeometry height="80" width="220" x="620" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="Itens" parent="1" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fillColor=#eef8ff;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Itens&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- idItem: String&lt;br/&gt;- quantidade: Double&lt;br/&gt;- precoUnitario: Double&lt;/p&gt;" vertex="1">
+          <mxGeometry height="90" width="220" x="2380" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_UsuarioDAO_Interface" edge="1" parent="1" source="UsuarioDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="410" y="240" />
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_ProprietarioDAO_Interface" edge="1" parent="1" source="ProprietarioDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="240" />
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_AdminDAO_Interface" edge="1" parent="1" source="AdminDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="240" />
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_PropriedadeDAO_Interface" edge="1" parent="1" source="PropriedadeDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1190" y="240" />
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_ComunidadeDAO_Interface" edge="1" parent="1" source="ComunidadeDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_SementeDAO_Interface" edge="1" parent="1" source="SementeDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1710" y="240" />
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_EstoqueDAO_Interface" edge="1" parent="1" source="EstoqueDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1970" y="240" />
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_PedidoDAO_Interface" edge="1" parent="1" source="PedidoDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2230" y="240" />
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_ItensDAO_Interface" edge="1" parent="1" source="ItensDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2490" y="240" />
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_NotificacaoDAO_Interface" edge="1" parent="1" source="NotificacaoDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=0;" target="InterfaceDAO">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2750" y="240" />
+              <mxPoint x="1450" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_UsuarioDAO_Conexao" edge="1" parent="1" source="UsuarioDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="210" />
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_ProprietarioDAO_Conexao" edge="1" parent="1" source="ProprietarioDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="680" y="210" />
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_AdminDAO_Conexao" edge="1" parent="1" source="AdminDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940" y="210" />
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_PropriedadeDAO_Conexao" edge="1" parent="1" source="PropriedadeDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1200" y="210" />
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_ComunidadeDAO_Conexao" edge="1" parent="1" source="ComunidadeDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1460" y="210" />
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_SementeDAO_Conexao" edge="1" parent="1" source="SementeDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_EstoqueDAO_Conexao" edge="1" parent="1" source="EstoqueDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1980" y="210" />
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_PedidoDAO_Conexao" edge="1" parent="1" source="PedidoDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2240" y="210" />
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_ItensDAO_Conexao" edge="1" parent="1" source="ItensDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2500" y="210" />
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_NotificacaoDAO_Conexao" edge="1" parent="1" source="NotificacaoDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;" target="Conexao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2760" y="210" />
+              <mxPoint x="1710" y="210" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_UsuarioDAO_Usuario" edge="1" parent="1" source="UsuarioDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Usuario">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="520" />
+              <mxPoint x="110" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-3" connectable="0" parent="edge_UsuarioDAO_Usuario" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-4" connectable="0" parent="edge_UsuarioDAO_Usuario" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ProprietarioDAO_Proprietario" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Proprietario">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="520" />
+              <mxPoint x="560" y="520" />
+              <mxPoint x="560" y="860" />
+              <mxPoint x="460" y="860" />
+            </Array>
+            <mxPoint x="710" y="450" as="sourcePoint" />
+            <mxPoint x="460" y="1180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-5" connectable="0" parent="edge_ProprietarioDAO_Proprietario" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-6" connectable="0" parent="edge_ProprietarioDAO_Proprietario" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_AdminDAO_Admin" edge="1" parent="1" source="AdminDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="520" />
+              <mxPoint x="800" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-7" connectable="0" parent="edge_AdminDAO_Admin" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-8" connectable="0" parent="edge_AdminDAO_Admin" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_PropriedadeDAO_Propriedade" edge="1" parent="1" source="PropriedadeDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Propriedade">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-9" connectable="0" parent="edge_PropriedadeDAO_Propriedade" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-10" connectable="0" parent="edge_PropriedadeDAO_Propriedade" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ComunidadeDAO_Comunidade" edge="1" parent="1" source="ComunidadeDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Comunidade">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-11" connectable="0" parent="edge_ComunidadeDAO_Comunidade" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-12" connectable="0" parent="edge_ComunidadeDAO_Comunidade" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_SementeDAO_Semente" edge="1" parent="1" source="SementeDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Semente">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-13" connectable="0" parent="edge_SementeDAO_Semente" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-14" connectable="0" parent="edge_SementeDAO_Semente" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_EstoqueDAO_Estoque" edge="1" parent="1" source="EstoqueDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Estoque">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-15" connectable="0" parent="edge_EstoqueDAO_Estoque" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-16" connectable="0" parent="edge_EstoqueDAO_Estoque" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_PedidoDAO_Pedido" edge="1" parent="1" source="PedidoDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Pedido">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-17" connectable="0" parent="edge_PedidoDAO_Pedido" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint x="-20" y="16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-18" connectable="0" parent="edge_PedidoDAO_Pedido" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ItensDAO_Itens" edge="1" parent="1" source="ItensDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Itens">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2500" y="650" />
+              <mxPoint x="2500" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-19" connectable="0" parent="edge_ItensDAO_Itens" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint x="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-20" connectable="0" parent="edge_ItensDAO_Itens" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_NotificacaoDAO_Notificacao" edge="1" parent="1" source="NotificacaoDAO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;endFill=0;fillColor=#6d8764;strokeColor=#3A5431;" target="Notificacao">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-21" connectable="0" parent="edge_NotificacaoDAO_Notificacao" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint x="10" y="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-22" connectable="0" parent="edge_NotificacaoDAO_Notificacao" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry">
+            <mxPoint x="30" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_Usuario_Pessoa" edge="1" parent="1" source="Usuario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=block;endFill=0;fillColor=#fa6800;strokeColor=#C73500;" target="Pessoa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="150" y="800" />
+              <mxPoint x="250" y="800" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_Proprietario_Pessoa" edge="1" parent="1" source="Proprietario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=block;endFill=0;fillColor=#fa6800;strokeColor=#C73500;" target="Pessoa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="980" />
+              <mxPoint x="320" y="980" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_Admin_Pessoa" edge="1" parent="1" source="Admin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=block;endFill=0;fillColor=#fa6800;strokeColor=#C73500;" target="Pessoa">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="830" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_Semente_Estoque" edge="1" parent="1" source="Semente" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;" target="Estoque">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-23" connectable="0" parent="edge_Semente_Estoque" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-24" connectable="0" parent="edge_Semente_Estoque" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Pedido_Itens" edge="1" parent="1" source="Pedido" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;startArrow=diamondThin;startFill=1;endArrow=none;fillColor=#e51400;strokeColor=#B20000;" target="Itens">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2320" y="780" />
+              <mxPoint x="2430" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-25" connectable="0" parent="edge_Pedido_Itens" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint x="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-26" connectable="0" parent="edge_Pedido_Itens" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="1..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Itens_Semente" edge="1" parent="1" source="Itens" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;fillColor=#60a917;strokeColor=#2D7600;" target="Semente">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2490" y="1020" />
+              <mxPoint x="1770" y="1020" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-27" connectable="0" parent="edge_Itens_Semente" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint x="46" y="-40" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-28" connectable="0" parent="edge_Itens_Semente" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry">
+            <mxPoint x="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_Pedido_Notificacao" edge="1" parent="1" source="Pedido" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;fillColor=#6a00ff;strokeColor=#3700CC;" target="Notificacao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2270" y="560" />
+              <mxPoint x="2680" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-29" connectable="0" parent="edge_Pedido_Notificacao" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-30" connectable="0" parent="edge_Pedido_Notificacao" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Prop_Propriedade" edge="1" parent="1" source="Proprietario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;fillColor=#a20025;strokeColor=#6F0000;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" target="Propriedade">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1190" y="1240" />
+              <mxPoint x="1190" y="683" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-31" connectable="0" parent="edge_Prop_Propriedade" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-32" connectable="0" parent="edge_Prop_Propriedade" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="1..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Propriedade_Comunidade" edge="1" parent="1" source="Propriedade" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;" target="Comunidade">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-33" connectable="0" parent="edge_Propriedade_Comunidade" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1..*" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-34" connectable="0" parent="edge_Propriedade_Comunidade" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Admin_Comunidade" edge="1" parent="1" source="Admin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;fillColor=#b0e3e6;strokeColor=#0e8088;" target="Comunidade">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="980" />
+              <mxPoint x="1450" y="980" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-35" connectable="0" parent="edge_Admin_Comunidade" style="edgeLabel;html=1;align=center;verticalAlign=bottom;" value="gerencia" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Proprietario_Semente" edge="1" parent="1" source="Proprietario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" target="Semente">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="1150" />
+              <mxPoint x="1710" y="1150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-36" connectable="0" parent="edge_Proprietario_Semente" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-37" connectable="0" parent="edge_Proprietario_Semente" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry">
+            <mxPoint y="-117" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_Pedido_Usuario" edge="1" parent="1" source="Pedido" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;fillColor=#e3c800;strokeColor=#B09500;" target="Usuario">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2230" y="1070" />
+              <mxPoint x="150" y="1070" />
+            </Array>
+            <mxPoint x="2230" y="780" as="sourcePoint" />
+            <mxPoint x="150" y="920" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-38" connectable="0" parent="edge_Pedido_Usuario" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint x="10" y="-219" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-39" connectable="0" parent="edge_Pedido_Usuario" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry">
+            <mxPoint x="-69" y="-60" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_Pedido_Proprietario" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;fillColor=#1ba1e2;strokeColor=#006EAF;" target="Proprietario">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2150" y="1270" />
+            </Array>
+            <mxPoint x="2150" y="730" as="sourcePoint" />
+            <mxPoint x="440" y="1220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-40" connectable="0" parent="edge_Pedido_Proprietario" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint x="10" y="-177" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-41" connectable="0" parent="edge_Pedido_Proprietario" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_Notificacao_Proprietario" edge="1" parent="1" source="Notificacao" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=0;endArrow=open;endFill=0;fillColor=#d80073;strokeColor=#A50040;" target="Proprietario">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2750" y="1300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-42" connectable="0" parent="edge_Notificacao_Proprietario" style="edgeLabel;html=1;align=left;verticalAlign=bottom;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="-0.8" as="geometry">
+            <mxPoint x="10" y="-242" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AFBlaLyzPgC4Ml8rdoak-43" connectable="0" parent="edge_Notificacao_Proprietario" style="edgeLabel;html=1;align=right;verticalAlign=bottom;" value="1" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
