@@ -4,8 +4,9 @@ classDiagram
 
     class Pessoa {
         -String idPessoa
+        -String tipoDocumento
+        -String documento
         -String nome
-        -String cpf
         -String telefone
         -String email
         -String senhaHash
@@ -15,8 +16,8 @@ classDiagram
         +cadastrar() void
         +alterar() void
         +excluir() void
-        +validarCPFUnico(cpf: String) Boolean
         +validarEmailUnico(email: String) Boolean
+        +validarDocumentoUnico(documento: String) Boolean
         +alterarSenha(senhaAtual: String, novaSenha: String) Boolean
     }
 
@@ -86,26 +87,27 @@ classDiagram
         +verificarDependencias() Boolean
     }
 
-    class Semente {
-        -String idSemente
+    class Produto {
+        -String idProduto
+        -String idProprietario
         -String nomePopular
         -String descricao
         -String nomeCientifico
         -String urlFoto
-        -TipoSemente tipo
+        -TipoProduto tipo
+        -EspecieGeral especie
+        -FormatoProduto tipoProduto
+        -Double quantidade
         -Double preco
-        -String formaPrecificacao
         -UnidadePesagem tipoPesagem
-        -DisponibilidadeSemente disponibilidade
-        -Double quantidadeEstoque
-        -Double pesoEstoque
+        -DisponibilidadeProduto disponibilidade
         -DateTime dataUltimaAtualizacaoEstoque
         -DateTime dataInclusao
         -DateTime dataUltimaAlteracao
         +cadastrar() void
         +alterar() void
         +excluir() void
-        +consultar(parametros: Map) List~Semente~
+        +consultar(parametros: Map) List~Produto~
         +uploadFoto(foto: Bytes) String
         +validarCamposObrigatorios() Boolean
         +cadastrarEstoque(qtd: Double, unidade: String) void
@@ -115,7 +117,7 @@ classDiagram
         +recalcularAposPedido(qtd: Double, operacao: String) void
     }
 
-    class TipoSemente {
+    class TipoProduto {
         <<enumeration>>
         HORTALICA
         FRUTIFERA
@@ -123,6 +125,24 @@ classDiagram
         CEREAL
         LEGUMINOSA
         OUTRAS
+    }
+
+    class EspecieGeral {
+        <<enumeration>>
+        FEIJAO
+        MILHO
+        ABOBORA
+        ALFACE
+        ARROZ
+        CEBOLA
+        ALHO
+        OUTRAS
+    }
+
+    class FormatoProduto {
+        <<enumeration>>
+        MUDA
+        SEMENTE
     }
 
     class UnidadePesagem {
@@ -134,7 +154,7 @@ classDiagram
         UNIDADE
     }
 
-    class DisponibilidadeSemente {
+    class DisponibilidadeProduto {
         <<enumeration>>
         PARA_TROCA
         PARA_VENDA
@@ -144,9 +164,9 @@ classDiagram
 
     class Estoque {
         -String idEstoque
+        -String idProduto
         -TipoMovimentacao tipo
         -Double quantidade
-        -String descricao
         -DateTime dataMovimentacao
     }
 
@@ -207,7 +227,22 @@ classDiagram
         +acessarPedidoRelacionado() Pedido
     }
 
-    %% Herança
+    class Relatorio {
+        -String idRelatorio
+        -TipoRelatorio tipo
+        -Map filtrosUtilizados
+        -DateTime dataGeracao
+        -List dados
+        +processarDados() void
+    }
+
+    class TipoRelatorio {
+        <<enumeration>>
+        ESTOQUE_SEMENTES
+        PEDIDOS_REALIZADOS
+    }
+    
+    %% Herança Papéis (Sem Pessoa Física e Jurídica)
     Pessoa <|-- Usuario
     Pessoa <|-- Proprietario
     Pessoa <|-- Admin
@@ -225,21 +260,27 @@ classDiagram
     %% Admin
     Admin --> Comunidade : gerencia aprovação
 
-    %% Semente
-    Proprietario "1" --> "0..*" Semente : cadastra
-    Semente --> TipoSemente : classificada
-    Semente --> DisponibilidadeSemente : status
-    Semente --> UnidadePesagem : pesada em
-    Semente "1" --> "0..*" Estoque : registra movimentacoes
+    %% Produto e Estoque
+    Proprietario "1" --> "0..*" Produto : cadastra
+    Produto --> TipoProduto : classificada
+    Produto --> EspecieGeral : especie
+    Produto --> FormatoProduto : formato
+    Produto --> DisponibilidadeProduto : status
+    Produto --> UnidadePesagem : pesada em
+    Produto "1" --> "0..*" Estoque : registra movimentacoes
     Estoque --> TipoMovimentacao : tipo
 
     %% Pedido
     Pedido "1" *-- "1..*" Itens : contem
-    Itens "0..*" --> "1" Semente : refere-se a
+    Itens "0..*" --> "1" Produto : refere-se a
     Pedido "0..*" --> "1" Usuario : realizado por
     Pedido "0..*" --> "1" Proprietario : recebido por
     Pedido --> TipoPedido : tipo
     Pedido --> StatusPedido : status
     Pedido "1" --> "0..*" Notificacao : dispara alerta
     Notificacao "0..*" --> "1" Proprietario : pertence a
+
+    %% Relatorio
+    Proprietario "1" --> "0..*" Relatorio : solicita
+    Relatorio --> TipoRelatorio : classificado por
 ```
