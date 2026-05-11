@@ -2,6 +2,65 @@
 classDiagram
     direction TB
 
+    %% ================= PADRÃO OBSERVER =================
+    
+    class Subject {
+        <<interface>>
+        +register(o: Observer) void
+        +remove(o: Observer) void
+        +notifyObservers() void
+    }
+
+    class Observer {
+        <<interface>>
+        +update() void
+    }
+
+    %% Sujeito notifica Observadores
+    Subject "1" --> "0..*" Observer : notifica
+
+    %% ================= MODEL =================
+
+    class Pessoa {
+        -String idPessoa
+        -String tipoDocumento
+        -String documento
+        -String nome
+        -String telefone
+        -String email
+        -String senhaHash
+        -Logradouro logradouro
+        -DateTime dataCadastro
+        -DateTime dataUltimaAlteracao
+        +cadastrar() void
+        +alterar() void
+        +excluir() void
+        +validarEmailUnico(email: String) Boolean
+        +validarDocumentoUnico(documento: String) Boolean
+        +alterarSenha(senhaAtual: String, novaSenha: String) Boolean
+    }
+
+    class Usuario {
+        -String idUsuario
+        +consultar(parametros: Map) List~Usuario~
+    }
+
+    class Proprietario {
+        -String idProprietario
+        -String rg
+        -Boolean exibirNoSitePublico
+        +consultar(parametros: Map) List~Proprietario~
+        +validarRGUnico(rg: String) Boolean
+    }
+
+    class Admin {
+        -String idAdmin
+        -String nivelAcesso
+        +aprovarComunidade(id: String) void
+        +recusarComunidade(id: String) void
+        +listarComunidadesPendentes() List~Comunidade~
+    }
+
     class Logradouro {
         -String logradouro
         -String numero
@@ -33,26 +92,6 @@ classDiagram
         REJEITADA
     }
 
-    class Proprietario {
-        -String idProprietario
-        -String nome
-        -String rg
-        -String cpf
-        -String telefone
-        -String email
-        -String senhaHash
-        -Logradouro logradouro
-        -Boolean exibirNoSitePublico
-        -DateTime dataCadastro
-        -DateTime dataUltimaAlteracao
-        +cadastrar() void
-        +alterar() void
-        +excluir() void
-        +consultar(parametros: Map) List~Proprietario~
-        +validarCPFUnico(cpf: String) Boolean
-        +validarEmailUnico(email: String) Boolean
-    }
-
     class Propriedade {
         -String idPropriedade
         -String nome
@@ -67,29 +106,37 @@ classDiagram
         +verificarDependencias() Boolean
     }
 
-    class Semente {
-        -String idSemente
+    class Produto {
+        -String idProduto
+        -String idProprietario
         -String nomePopular
         -String descricao
         -String nomeCientifico
         -String urlFoto
-        -TipoSemente tipo
+        -TipoProduto tipo
+        -EspecieGeral especie
+        -FormatoProduto tipoProduto
+        -Double quantidade
         -Double preco
-        -String formaPrecificacao
         -UnidadePesagem tipoPesagem
-        -DisponibilidadeSemente disponibilidade
-        -Double quantidadeEstoque
+        -DisponibilidadeProduto disponibilidade
+        -DateTime dataUltimaAtualizacaoEstoque
         -DateTime dataInclusao
         -DateTime dataUltimaAlteracao
         +cadastrar() void
         +alterar() void
         +excluir() void
-        +consultar(parametros: Map) List~Semente~
+        +consultar(parametros: Map) List~Produto~
+        +uploadFoto(foto: Bytes) String
+        +validarCamposObrigatorios() Boolean
+        +cadastrarEstoque(qtd: Double, unidade: String) void
         +alterarEstoque(delta: Double) void
+        +zerarEstoque() void
         +verificarDisponibilidade(qtd: Double) Boolean
+        +recalcularAposPedido(qtd: Double, operacao: String) void
     }
 
-    class TipoSemente {
+    class TipoProduto {
         <<enumeration>>
         HORTALICA
         FRUTIFERA
@@ -97,6 +144,24 @@ classDiagram
         CEREAL
         LEGUMINOSA
         OUTRAS
+    }
+
+    class EspecieGeral {
+        <<enumeration>>
+        FEIJAO
+        MILHO
+        ABOBORA
+        ALFACE
+        ARROZ
+        CEBOLA
+        ALHO
+        OUTRAS
+    }
+
+    class FormatoProduto {
+        <<enumeration>>
+        MUDA
+        SEMENTE
     }
 
     class UnidadePesagem {
@@ -108,7 +173,7 @@ classDiagram
         UNIDADE
     }
 
-    class DisponibilidadeSemente {
+    class DisponibilidadeProduto {
         <<enumeration>>
         PARA_TROCA
         PARA_VENDA
@@ -118,9 +183,9 @@ classDiagram
 
     class Estoque {
         -String idEstoque
+        -String idProduto
         -TipoMovimentacao tipo
         -Double quantidade
-        -String descricao
         -DateTime dataMovimentacao
     }
 
@@ -137,8 +202,6 @@ classDiagram
     class Pedido {
         -String idPedido
         -TipoPedido tipoPedido
-        -String nomeRecebedor
-        -String contatoRecebedor
         -String mensagemOpcional
         -DateTime dataPedido
         -StatusPedido status
@@ -180,12 +243,30 @@ classDiagram
         +gerar(pedido: Pedido) Notificacao
         +marcarComoLida() void
         +listarHistorico(idProprietario: String) List~Notificacao~
+        +acessarPedidoRelacionado() Pedido
     }
 
-    class SementeController {
-        -Semente semente
-        +listarSementes(filtros: Map) List~Semente~
-        +exibirDetalhe(idSemente: String) Semente
+    class Relatorio {
+        -String idRelatorio
+        -TipoRelatorio tipo
+        -Map filtrosUtilizados
+        -DateTime dataGeracao
+        -List dados
+        +processarDados() void
+    }
+
+    class TipoRelatorio {
+        <<enumeration>>
+        ESTOQUE_SEMENTES
+        PEDIDOS_REALIZADOS
+    }
+
+    %% ================= CONTROLLERS =================
+
+    class ProdutoController {
+        -Produto produto
+        +listarProdutos(filtros: Map) List~Produto~
+        +exibirDetalhe(idProduto: String) Produto
         +tratarRequisicao() void
     }
 
@@ -235,11 +316,24 @@ classDiagram
         +tratarRequisicao() void
     }
 
-    class SementeView {
-        -SementeController sementeController
+    class EstoqueController {
+        -Estoque estoque
+        +listarMovimentacoes(filtros: Map) List~Estoque~
+        +registrarMovimentacao(dados: Map) void
+        +tratarRequisicao() void
+    }
+
+    %% ================= VIEWS =================
+
+    class ProdutoView {
+        -ProdutoController produtoController
         +exibirListagem() void
         +exibirDetalheModal() void
         +exibirFiltros() void
+        +exibirFormularioCadastro() void
+        +exibirFormularioEdicao() void
+        +exibirConfirmacaoExclusao() void
+        +gerarMapa() void
     }
 
     class ProprietarioView {
@@ -247,6 +341,9 @@ classDiagram
         +exibirListagem() void
         +exibirPerfilProdutor() void
         +exibirFiltros() void
+        +exibirFormularioCadastro() void
+        +exibirFormularioEdicao() void
+        +exibirConfirmacaoExclusao() void
     }
 
     class PropriedadeView {
@@ -256,13 +353,29 @@ classDiagram
         +exibirFiltros() void
         +exibirSeletorComunidade() void
         +exibirFormularioSolicitarComunidade() void
+        +exibirFormularioCadastro() void
+        +exibirFormularioEdicao() void
+        +exibirConfirmacaoExclusao() void
     }
 
     class PedidoView {
         -PedidoController pedidoController
-        +exibirFormularioPedido() void
+        +exibirListagem() void
+        +exibirFiltros() void
         +exibirConfirmacao() void
         +exibirErro() void
+        +exibirFormularioCadastro() void
+        +exibirFormularioEdicao() void
+        +exibirConfirmacaoExclusao() void
+    }
+
+    class EstoqueView {
+        -EstoqueController estoqueController
+        +exibirListagem() void
+        +exibirFiltros() void
+        +exibirFormularioCadastro() void
+        +exibirFormularioEdicao() void
+        +exibirConfirmacaoExclusao() void
     }
 
     class RelatorioView {
@@ -272,7 +385,7 @@ classDiagram
     }
 
     class MapaView {
-        -SementeController sementeController
+        -ProdutoController produtoController
         +exibirMapaInterativo() void
         +exibirPinsPropriedades() void
     }
@@ -284,44 +397,93 @@ classDiagram
         +exibirConfirmacaoAprovacao() void
     }
 
-    Proprietario --> Logradouro
+    %% ================= RELATIONSHIPS =================
+
+    %% Implementação do Padrão Observer (Controllers -> Subject)
+    ProdutoController ..|> Subject
+    ProprietarioController ..|> Subject
+    PropriedadeController ..|> Subject
+    PedidoController ..|> Subject
+    EstoqueController ..|> Subject
+    RelatorioController ..|> Subject
+    ComunidadeController ..|> Subject
+    AdminController ..|> Subject
+
+    %% Implementação do Padrão Observer (Models -> Observer)
+    Pessoa ..|> Observer
+    Comunidade ..|> Observer
+    Propriedade ..|> Observer
+    Produto ..|> Observer
+    Estoque ..|> Observer
+    Pedido ..|> Observer
+    Relatorio ..|> Observer
+
+    %% Implementação do Padrão Observer (Views -> Observer)
+    ProdutoView ..|> Observer
+    ProprietarioView ..|> Observer
+    PropriedadeView ..|> Observer
+    PedidoView ..|> Observer
+    EstoqueView ..|> Observer
+    RelatorioView ..|> Observer
+    MapaView ..|> Observer
+    AdminView ..|> Observer
+
+    %% Herança e Localização (Model)
+    Pessoa <|-- Usuario
+    Pessoa <|-- Proprietario
+    Pessoa <|-- Admin
+    Pessoa --> Logradouro
     Propriedade --> Logradouro
     Comunidade --> Logradouro
     Comunidade --> StatusComunidade
 
+    %% Relacionamentos do Domínio
     Proprietario "1" --> "1..*" Propriedade
     Propriedade "1..*" --> "1" Comunidade
+    Admin --> Comunidade : gerencia
 
-    Proprietario "1" --> "0..*" Semente
-    Semente --> TipoSemente
-    Semente --> DisponibilidadeSemente
-    Semente --> UnidadePesagem
-    Semente "1" --> "0..*" Estoque
+    Proprietario "1" --> "0..*" Produto
+    Produto --> TipoProduto
+    Produto --> EspecieGeral
+    Produto --> FormatoProduto
+    Produto --> DisponibilidadeProduto
+    Produto --> UnidadePesagem
+    Produto "1" --> "0..*" Estoque
     Estoque --> TipoMovimentacao
 
     Pedido "1" *-- "1..*" Itens
-    Itens "0..*" --> "1" Semente
-    Pedido "0..*" --> "1" Proprietario
+    Itens "0..*" --> "1" Produto
+    Pedido "0..*" --> "1" Usuario : realizado por
+    Pedido "0..*" --> "1" Proprietario : recebido por
     Pedido --> TipoPedido
     Pedido --> StatusPedido
     Pedido "1" --> "0..*" Notificacao
     Notificacao "0..*" --> "1" Proprietario
+    
+    Proprietario "1" --> "0..*" Relatorio
+    Relatorio --> TipoRelatorio
 
-    SementeView "0..*" --> "1" SementeController
+    %% Relacionamentos MVC (Views -> Controllers)
+    ProdutoView "0..*" --> "1" ProdutoController
     ProprietarioView "0..*" --> "1" ProprietarioController
     PropriedadeView "0..*" --> "1" PropriedadeController
     PedidoView "0..*" --> "1" PedidoController
+    EstoqueView "0..*" --> "1" EstoqueController
     RelatorioView "0..*" --> "1" RelatorioController
-    MapaView "0..*" --> "1" SementeController
+    MapaView "0..*" --> "1" ProdutoController
     AdminView "0..*" --> "1" AdminController
 
+    %% Integração entre Controllers
     PropriedadeController --> ComunidadeController
     AdminController --> ComunidadeController
 
-    SementeController "1" --> "0..*" Semente
+    %% Relacionamentos MVC (Controllers -> Models)
+    ProdutoController "1" --> "0..*" Produto
     ProprietarioController "1" --> "0..*" Proprietario
     PropriedadeController "1" --> "0..*" Propriedade
     PedidoController "1" --> "0..*" Pedido
     ComunidadeController "1" --> "0..*" Comunidade
     AdminController "1" --> "0..*" Comunidade
+    EstoqueController "1" --> "0..*" Estoque
+    RelatorioController "1" --> "0..*" Relatorio
 ```
