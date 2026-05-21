@@ -89,32 +89,19 @@ classDiagram
 
     class Produto {
         -String idProduto
-        -String idProprietario
         -String nomePopular
-        -String descricao
         -String nomeCientifico
+        -String historico
         -String urlFoto
         -TipoProduto tipo
         -EspecieGeral especie
         -FormatoProduto tipoProduto
-        -Double quantidade
-        -Double preco
-        -UnidadePesagem tipoPesagem
-        -DisponibilidadeProduto disponibilidade
-        -DateTime dataUltimaAtualizacaoEstoque
         -DateTime dataInclusao
         -DateTime dataUltimaAlteracao
         +cadastrar() void
-        +alterar() void
-        +excluir() void
         +consultar(parametros: Map) List~Produto~
         +uploadFoto(foto: Bytes) String
         +validarCamposObrigatorios() Boolean
-        +cadastrarEstoque(qtd: Double, unidade: String) void
-        +alterarEstoque(delta: Double) void
-        +zerarEstoque() void
-        +verificarDisponibilidade(qtd: Double) Boolean
-        +recalcularAposPedido(qtd: Double, operacao: String) void
     }
 
     class TipoProduto {
@@ -145,7 +132,7 @@ classDiagram
         SEMENTE
     }
 
-    class UnidadePesagem {
+    class Pesagem {
         <<enumeration>>
         SACA
         KG
@@ -164,10 +151,21 @@ classDiagram
 
     class Estoque {
         -String idEstoque
+        -String idProprietario
         -String idProduto
-        -TipoMovimentacao tipo
+        -String descricao
+        -Double preco
         -Double quantidade
+        -Pesagem tipoPesagem
+        -DisponibilidadeProduto disponibilidade
+        -TipoMovimentacao tipo
         -DateTime dataMovimentacao
+        -DateTime dataUltimaAtualizacaoEstoque
+        +cadastrarEstoque(qtd: Double, unidade: String) void
+        +alterarEstoque(delta: Double) void
+        +zerarEstoque() void
+        +verificarDisponibilidade(qtd: Double) Boolean
+        +recalcularAposPedido(qtd: Double, operacao: String) void
     }
 
     class TipoMovimentacao {
@@ -260,14 +258,16 @@ classDiagram
     %% Admin
     Admin --> Comunidade : gerencia aprovação
 
-    %% Produto e Estoque
-    Proprietario "1" --> "0..*" Produto : cadastra
+    %% Produto e Estoque (Estoque como elo central)
+    Proprietario "1" --> "0..*" Estoque : gerencia ofertas
+    Estoque "0..*" --> "1" Produto : refere-se a
+    Produto "0..*" --> "1" Comunidade : origem
+
     Produto --> TipoProduto : classificada
     Produto --> EspecieGeral : especie
     Produto --> FormatoProduto : formato
-    Produto --> DisponibilidadeProduto : status
-    Produto --> UnidadePesagem : pesada em
-    Produto "1" --> "0..*" Estoque : registra movimentacoes
+    Estoque --> DisponibilidadeProduto : status
+    Estoque --> Pesagem : pesada em
     Estoque --> TipoMovimentacao : tipo
 
     %% Pedido

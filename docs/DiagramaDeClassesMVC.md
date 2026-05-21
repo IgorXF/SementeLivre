@@ -108,19 +108,13 @@ classDiagram
 
     class Produto {
         -String idProduto
-        -String idProprietario
         -String nomePopular
-        -String descricao
         -String nomeCientifico
+        -String historico
         -String urlFoto
         -TipoProduto tipo
         -EspecieGeral especie
         -FormatoProduto tipoProduto
-        -Double quantidade
-        -Double preco
-        -UnidadePesagem tipoPesagem
-        -DisponibilidadeProduto disponibilidade
-        -DateTime dataUltimaAtualizacaoEstoque
         -DateTime dataInclusao
         -DateTime dataUltimaAlteracao
         +cadastrar() void
@@ -129,11 +123,6 @@ classDiagram
         +consultar(parametros: Map) List~Produto~
         +uploadFoto(foto: Bytes) String
         +validarCamposObrigatorios() Boolean
-        +cadastrarEstoque(qtd: Double, unidade: String) void
-        +alterarEstoque(delta: Double) void
-        +zerarEstoque() void
-        +verificarDisponibilidade(qtd: Double) Boolean
-        +recalcularAposPedido(qtd: Double, operacao: String) void
     }
 
     class TipoProduto {
@@ -164,7 +153,7 @@ classDiagram
         SEMENTE
     }
 
-    class UnidadePesagem {
+    class Pesagem {
         <<enumeration>>
         SACA
         KG
@@ -183,10 +172,21 @@ classDiagram
 
     class Estoque {
         -String idEstoque
+        -String idProprietario
         -String idProduto
-        -TipoMovimentacao tipo
+        -String descricao
+        -Double preco
         -Double quantidade
+        -Pesagem tipoPesagem
+        -DisponibilidadeProduto disponibilidade
+        -TipoMovimentacao tipo
         -DateTime dataMovimentacao
+        -DateTime dataUltimaAtualizacaoEstoque
+        +cadastrarEstoque(qtd: Double, unidade: String) void
+        +alterarEstoque(delta: Double) void
+        +zerarEstoque() void
+        +verificarDisponibilidade(qtd: Double) Boolean
+        +recalcularAposPedido(qtd: Double, operacao: String) void
     }
 
     class TipoMovimentacao {
@@ -333,7 +333,6 @@ classDiagram
         +exibirFormularioCadastro() void
         +exibirFormularioEdicao() void
         +exibirConfirmacaoExclusao() void
-        +gerarMapa() void
     }
 
     class ProprietarioView {
@@ -376,6 +375,7 @@ classDiagram
         +exibirFormularioCadastro() void
         +exibirFormularioEdicao() void
         +exibirConfirmacaoExclusao() void
+        +gerarMapa() void
     }
 
     class RelatorioView {
@@ -385,7 +385,7 @@ classDiagram
     }
 
     class MapaView {
-        -ProdutoController produtoController
+        -EstoqueController estoqueController
         +exibirMapaInterativo() void
         +exibirPinsPropriedades() void
     }
@@ -442,15 +442,19 @@ classDiagram
     Propriedade "1..*" --> "1" Comunidade
     Admin --> Comunidade : gerencia
 
-    Proprietario "1" --> "0..*" Produto
-    Produto --> TipoProduto
-    Produto --> EspecieGeral
-    Produto --> FormatoProduto
-    Produto --> DisponibilidadeProduto
-    Produto --> UnidadePesagem
-    Produto "1" --> "0..*" Estoque
-    Estoque --> TipoMovimentacao
+    %% Produto e Estoque (Estoque como elo central)
+    Proprietario "1" --> "0..*" Estoque : gerencia ofertas
+    Estoque "0..*" --> "1" Produto : refere-se a
+    Produto "0..*" --> "1" Comunidade : origem
 
+    Produto --> TipoProduto : classificada
+    Produto --> EspecieGeral : especie
+    Produto --> FormatoProduto : formato
+    Estoque --> DisponibilidadeProduto : status
+    Estoque --> Pesagem : pesada em
+    Estoque --> TipoMovimentacao : tipo
+
+    %% Pedido
     Pedido "1" *-- "1..*" Itens
     Itens "0..*" --> "1" Produto
     Pedido "0..*" --> "1" Usuario : realizado por
@@ -470,7 +474,7 @@ classDiagram
     PedidoView "0..*" --> "1" PedidoController
     EstoqueView "0..*" --> "1" EstoqueController
     RelatorioView "0..*" --> "1" RelatorioController
-    MapaView "0..*" --> "1" ProdutoController
+    MapaView "0..*" --> "1" EstoqueController
     AdminView "0..*" --> "1" AdminController
 
     %% Integração entre Controllers
