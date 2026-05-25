@@ -1,0 +1,357 @@
+@startuml
+' =========================================================
+' CONFIGURAÇÕES VISUAIS
+' =========================================================
+
+title SISTEMA SEMENTE LIVRE\nDIAGRAMA DE IMPLANTAÇÃO UML
+
+top to bottom direction
+scale max 2200 width
+
+skinparam dpi 180
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam linetype ortho
+skinparam packageStyle rectangle
+
+skinparam node {
+    BackgroundColor #F8F8F8
+    BorderColor #333333
+}
+
+skinparam database {
+    BackgroundColor #FFF8DC
+}
+
+skinparam cloud {
+    BackgroundColor #EEF7FF
+}
+
+skinparam component {
+    BackgroundColor #FFFFFF
+}
+
+' =========================================================
+' ATORES DO SISTEMA
+' =========================================================
+
+actor "Produtor Rural" as Produtor
+actor "Administrador do Sistema" as Admin
+actor "Usuário Visitante" as Visitante
+
+' =========================================================
+' CAMADA CLIENTE MOBILE
+' =========================================================
+
+node "Dispositivo Mobile Android\n<<device>>" as Android {
+
+    artifact "SementeLivre.apk\n<<artifact>>" as APK
+
+    node "Ambiente React Native\n<<executionEnvironment>>" as RNRuntime {
+
+        component "Views Mobile" as MViews
+        component "Controllers Mobile" as MControllers
+        component "Models Mobile" as MModels
+
+        component "DAO Local" as MDAO
+        component "Serviços REST" as MServices
+
+        database "SQLite Local Cache" as SQLite
+
+        component "Módulo Offline" as Offline
+        component "Sincronização Automática" as Sync
+        component "Gerenciamento de Sessão" as Session
+        component "Push Notifications" as Push
+        component "Exportação PDF/CSV" as Export
+
+    }
+
+}
+
+' =========================================================
+' CAMADA CLIENTE WEB
+' =========================================================
+
+node "Cliente Web Desktop\n<<device>>" as Desktop {
+
+    artifact "Frontend React.js\n<<artifact>>" as ReactWeb
+
+    node "Browser Runtime\n<<executionEnvironment>>" as Browser {
+
+        component "Interface Web" as WebUI
+        component "Controllers Web" as WebController
+        component "Serviços Web" as WebServices
+        component "Gerenciamento de Sessão Web" as WebSession
+
+    }
+
+}
+
+' =========================================================
+' INTERNET
+' =========================================================
+
+cloud "Internet\nHTTPS / SSL-TLS" as Internet
+
+' =========================================================
+' CLOUD FIREBASE
+' =========================================================
+
+cloud "Infraestrutura Google Firebase\n<<cloud>>" as Firebase {
+
+    ' =====================================================
+    ' AUTENTICAÇÃO
+    ' =====================================================
+
+    node "Firebase Authentication\n<<service>>" as Auth {
+
+        artifact "JWT Tokens"
+        artifact "Controle de Sessão"
+        artifact "Criptografia"
+        artifact "Controle de Acesso"
+
+    }
+
+    ' =====================================================
+    ' BANCO DE DADOS
+    ' =====================================================
+
+    database "Cloud Firestore\n<<database>>" as Firestore {
+
+        artifact "Coleção Usuários"
+        artifact "Coleção Produtos"
+        artifact "Coleção Estoque"
+        artifact "Coleção Pedidos"
+        artifact "Coleção Comunidades"
+        artifact "Coleção Mensagens"
+        artifact "Coleção Relatórios"
+        artifact "Coleção Logs"
+
+    }
+
+    ' =====================================================
+    ' STORAGE
+    ' =====================================================
+
+    folder "Firebase Storage\n<<storage>>" as Storage {
+
+        artifact "Fotos Produtos"
+        artifact "Imagens Perfil"
+        artifact "Arquivos PDF"
+        artifact "Arquivos CSV"
+        artifact "Documentos"
+
+    }
+
+    ' =====================================================
+    ' CLOUD FUNCTIONS
+    ' =====================================================
+
+    node "Firebase Functions\n<<executionEnvironment>>" as Functions {
+
+        component "API Produtos"
+        component "API Pedidos"
+        component "API Usuários"
+        component "API Comunidades"
+        component "API Relatórios"
+        component "API Mensagens"
+
+        component "Regras de Negócio"
+        component "Validação de Dados"
+        component "Logs do Sistema"
+        component "Controle Transacional"
+
+    }
+
+    ' =====================================================
+    ' HOSPEDAGEM WEB
+    ' =====================================================
+
+    node "Firebase Hosting\n<<server>>" as Hosting {
+
+        artifact "Aplicação React.js"
+        artifact "Arquivos Estáticos"
+        artifact "Assets Web"
+
+    }
+
+    ' =====================================================
+    ' NOTIFICAÇÕES
+    ' =====================================================
+
+    node "Firebase Cloud Messaging\n<<service>>" as FCM {
+
+        artifact "Push Notifications"
+        artifact "Alertas Sistema"
+        artifact "Mensagens Tempo Real"
+
+    }
+
+}
+
+' =========================================================
+' SERVIDOR DE RELATÓRIOS
+' =========================================================
+
+node "Servidor de Relatórios\n<<server>>" as ReportServer {
+
+    node "Node.js Runtime\n<<executionEnvironment>>" as NodeRuntime {
+
+        component "Gerador PDF"
+        component "Gerador CSV"
+        component "Exportador Dados"
+        component "Compilador Relatórios"
+
+    }
+
+}
+
+' =========================================================
+' SERVIDOR BACKUP
+' =========================================================
+
+database "Servidor Backup\n<<database>>" as Backup {
+
+    artifact "Backup Diário"
+    artifact "Backup Semanal"
+    artifact "Recuperação Desastres"
+    artifact "Logs Auditoria"
+
+}
+
+' =========================================================
+' SERVIDOR MONITORAMENTO
+' =========================================================
+
+node "Servidor Monitoramento\n<<server>>" as Monitor {
+
+    component "Monitoramento Uptime"
+    component "Monitoramento Performance"
+    component "Monitoramento Bugs"
+    component "Logs Aplicação"
+    component "Logs Segurança"
+
+}
+
+' =========================================================
+' CONEXÕES DOS USUÁRIOS
+' =========================================================
+
+Produtor --> Android : Utiliza Aplicação Mobile
+Admin --> Desktop : Administração Sistema
+Visitante --> Desktop : Acesso Web
+
+' =========================================================
+' CONEXÕES INTERNET
+' =========================================================
+
+Android --> Internet : HTTPS / REST API
+Desktop --> Internet : HTTPS / REST API
+
+' =========================================================
+' CONEXÕES FIREBASE
+' =========================================================
+
+Internet --> Auth : Autenticação SSL
+Internet --> Firestore : Consultas HTTPS
+Internet --> Storage : Upload/Download
+Internet --> Functions : API REST
+Internet --> Hosting : Hospedagem Web
+Internet --> FCM : Push Protocol
+
+' =========================================================
+' CONEXÕES INTERNAS FIREBASE
+' =========================================================
+
+Functions --> Firestore : CRUD Dados
+Functions --> Storage : Armazenamento Arquivos
+Functions --> FCM : Envio Notificações
+Functions --> Backup : Rotina Backup
+Functions --> Monitor : Logs + Métricas
+
+Auth --> Firestore : Validação Usuários
+
+' =========================================================
+' RELATÓRIOS
+' =========================================================
+
+ReportServer --> Firestore : Consulta Dados
+ReportServer --> Storage : Armazena PDFs
+
+Export --> ReportServer : Solicitação Relatórios
+
+' =========================================================
+' SINCRONIZAÇÃO OFFLINE
+' =========================================================
+
+SQLite --> Offline : Persistência Local
+Offline --> Sync : Dados Offline
+Sync --> Firestore : Sincronização Cloud
+
+' =========================================================
+' OBSERVAÇÕES TÉCNICAS
+' =========================================================
+
+note right of Android
+
+ANDROID CLIENT
+
+• React Native + TypeScript
+• Execução Offline
+• SQLite Local
+• Cache Persistente
+• Push Notifications
+• HTTPS Seguro
+• Sincronização Automática
+
+end note
+
+note right of Desktop
+
+WEB CLIENT
+
+• React.js
+• Execução Browser
+• HTTPS/TLS
+• Interface Responsiva
+• Administração Sistema
+
+end note
+
+note right of Firebase
+
+GOOGLE FIREBASE CLOUD
+
+• Alta Disponibilidade
+• Escalabilidade Horizontal
+• Segurança JWT
+• Cloud Native
+• Balanceamento Automático
+• Infraestrutura Distribuída
+
+end note
+
+note bottom of Backup
+
+POLÍTICAS DE BACKUP
+
+• Backup Diário Automatizado
+• Recuperação Desastres
+• Logs Auditoria
+• Integridade Dados
+• Disponibilidade >= 99.5%
+
+end note
+
+note bottom of Monitor
+
+MONITORAMENTO
+
+• Logs Performance
+• Logs Segurança
+• Rastreamento Bugs
+• Monitoramento Uptime
+• Métricas Sistema
+
+end note
+@enduml
