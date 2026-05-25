@@ -1,9 +1,10 @@
 @startuml
+
 ' =========================================================
 ' CONFIGURAÇÕES VISUAIS
 ' =========================================================
 
-title SISTEMA SEMENTE LIVRE\nDIAGRAMA DE IMPLANTAÇÃO UML
+title SISTEMA SEMENTE LIVRE\nDIAGRAMA DE IMPLANTAÇÃO UML\nARQUITETURA SUPABASE + SQL
 
 top to bottom direction
 scale max 2200 width
@@ -32,7 +33,7 @@ skinparam component {
 }
 
 ' =========================================================
-' ATORES DO SISTEMA
+' ATORES
 ' =========================================================
 
 actor "Produtor Rural" as Produtor
@@ -40,27 +41,27 @@ actor "Administrador do Sistema" as Admin
 actor "Usuário Visitante" as Visitante
 
 ' =========================================================
-' CAMADA CLIENTE MOBILE
+' CLIENTE MOBILE
 ' =========================================================
 
 node "Dispositivo Mobile Android\n<<device>>" as Android {
 
     artifact "SementeLivre.apk\n<<artifact>>" as APK
 
-    node "Ambiente React Native\n<<executionEnvironment>>" as RNRuntime {
+    node "React Native Runtime\n<<executionEnvironment>>" as RNRuntime {
 
         component "Views Mobile" as MViews
         component "Controllers Mobile" as MControllers
         component "Models Mobile" as MModels
 
         component "DAO Local" as MDAO
-        component "Serviços REST" as MServices
+        component "REST Services" as MServices
 
-        database "SQLite Local Cache" as SQLite
+        database "SQLite Local Cache\n<<database>>" as SQLite
 
         component "Módulo Offline" as Offline
         component "Sincronização Automática" as Sync
-        component "Gerenciamento de Sessão" as Session
+        component "Gerenciamento Sessão" as Session
         component "Push Notifications" as Push
         component "Exportação PDF/CSV" as Export
 
@@ -69,7 +70,7 @@ node "Dispositivo Mobile Android\n<<device>>" as Android {
 }
 
 ' =========================================================
-' CAMADA CLIENTE WEB
+' CLIENTE WEB
 ' =========================================================
 
 node "Cliente Web Desktop\n<<device>>" as Desktop {
@@ -80,8 +81,8 @@ node "Cliente Web Desktop\n<<device>>" as Desktop {
 
         component "Interface Web" as WebUI
         component "Controllers Web" as WebController
-        component "Serviços Web" as WebServices
-        component "Gerenciamento de Sessão Web" as WebSession
+        component "Services API" as WebServices
+        component "Sessão Web" as WebSession
 
     }
 
@@ -94,38 +95,38 @@ node "Cliente Web Desktop\n<<device>>" as Desktop {
 cloud "Internet\nHTTPS / SSL-TLS" as Internet
 
 ' =========================================================
-' CLOUD FIREBASE
+' INFRAESTRUTURA SUPABASE
 ' =========================================================
 
-cloud "Infraestrutura Google Firebase\n<<cloud>>" as Firebase {
+cloud "Supabase Cloud Platform\n<<cloud>>" as Supabase {
 
     ' =====================================================
     ' AUTENTICAÇÃO
     ' =====================================================
 
-    node "Firebase Authentication\n<<service>>" as Auth {
+    node "Supabase Auth\n<<service>>" as Auth {
 
         artifact "JWT Tokens"
-        artifact "Controle de Sessão"
-        artifact "Criptografia"
-        artifact "Controle de Acesso"
+        artifact "Controle Sessão"
+        artifact "OAuth2"
+        artifact "Row Level Security"
 
     }
 
     ' =====================================================
-    ' BANCO DE DADOS
+    ' BANCO SQL
     ' =====================================================
 
-    database "Cloud Firestore\n<<database>>" as Firestore {
+    database "PostgreSQL Database\n<<database>>" as PostgreSQL {
 
-        artifact "Coleção Usuários"
-        artifact "Coleção Produtos"
-        artifact "Coleção Estoque"
-        artifact "Coleção Pedidos"
-        artifact "Coleção Comunidades"
-        artifact "Coleção Mensagens"
-        artifact "Coleção Relatórios"
-        artifact "Coleção Logs"
+        artifact "Tabela Usuarios"
+        artifact "Tabela Produtos"
+        artifact "Tabela Estoque"
+        artifact "Tabela Pedidos"
+        artifact "Tabela Comunidades"
+        artifact "Tabela Mensagens"
+        artifact "Tabela Relatorios"
+        artifact "Tabela Logs"
 
     }
 
@@ -133,7 +134,7 @@ cloud "Infraestrutura Google Firebase\n<<cloud>>" as Firebase {
     ' STORAGE
     ' =====================================================
 
-    folder "Firebase Storage\n<<storage>>" as Storage {
+    folder "Supabase Storage\n<<storage>>" as Storage {
 
         artifact "Fotos Produtos"
         artifact "Imagens Perfil"
@@ -144,10 +145,10 @@ cloud "Infraestrutura Google Firebase\n<<cloud>>" as Firebase {
     }
 
     ' =====================================================
-    ' CLOUD FUNCTIONS
+    ' EDGE FUNCTIONS
     ' =====================================================
 
-    node "Firebase Functions\n<<executionEnvironment>>" as Functions {
+    node "Supabase Edge Functions\n<<executionEnvironment>>" as Functions {
 
         component "API Produtos"
         component "API Pedidos"
@@ -156,44 +157,44 @@ cloud "Infraestrutura Google Firebase\n<<cloud>>" as Firebase {
         component "API Relatórios"
         component "API Mensagens"
 
-        component "Regras de Negócio"
-        component "Validação de Dados"
-        component "Logs do Sistema"
+        component "Regras Negócio"
+        component "Validação Dados"
+        component "Logs Sistema"
         component "Controle Transacional"
 
     }
 
     ' =====================================================
-    ' HOSPEDAGEM WEB
+    ' REALTIME
     ' =====================================================
 
-    node "Firebase Hosting\n<<server>>" as Hosting {
+    node "Supabase Realtime\n<<service>>" as Realtime {
 
-        artifact "Aplicação React.js"
-        artifact "Arquivos Estáticos"
-        artifact "Assets Web"
+        artifact "WebSocket Channels"
+        artifact "Atualização Tempo Real"
+        artifact "Eventos Banco"
 
     }
 
     ' =====================================================
-    ' NOTIFICAÇÕES
+    ' API GATEWAY
     ' =====================================================
 
-    node "Firebase Cloud Messaging\n<<service>>" as FCM {
+    node "Supabase REST API\n<<server>>" as API {
 
-        artifact "Push Notifications"
-        artifact "Alertas Sistema"
-        artifact "Mensagens Tempo Real"
+        artifact "REST Endpoints"
+        artifact "PostgREST"
+        artifact "HTTPS API"
 
     }
 
 }
 
 ' =========================================================
-' SERVIDOR DE RELATÓRIOS
+' SERVIDOR RELATÓRIOS
 ' =========================================================
 
-node "Servidor de Relatórios\n<<server>>" as ReportServer {
+node "Servidor Relatórios\n<<server>>" as ReportServer {
 
     node "Node.js Runtime\n<<executionEnvironment>>" as NodeRuntime {
 
@@ -207,25 +208,26 @@ node "Servidor de Relatórios\n<<server>>" as ReportServer {
 }
 
 ' =========================================================
-' SERVIDOR BACKUP
+' BACKUP
 ' =========================================================
 
-database "Servidor Backup\n<<database>>" as Backup {
+database "Servidor Backup SQL\n<<database>>" as Backup {
 
+    artifact "Backup PostgreSQL"
     artifact "Backup Diário"
-    artifact "Backup Semanal"
     artifact "Recuperação Desastres"
     artifact "Logs Auditoria"
 
 }
 
 ' =========================================================
-' SERVIDOR MONITORAMENTO
+' MONITORAMENTO
 ' =========================================================
 
 node "Servidor Monitoramento\n<<server>>" as Monitor {
 
     component "Monitoramento Uptime"
+    component "Monitoramento SQL"
     component "Monitoramento Performance"
     component "Monitoramento Bugs"
     component "Logs Aplicação"
@@ -249,36 +251,39 @@ Android --> Internet : HTTPS / REST API
 Desktop --> Internet : HTTPS / REST API
 
 ' =========================================================
-' CONEXÕES FIREBASE
+' CONEXÕES SUPABASE
 ' =========================================================
 
-Internet --> Auth : Autenticação SSL
-Internet --> Firestore : Consultas HTTPS
+Internet --> Auth : OAuth2 / JWT
+Internet --> PostgreSQL : SQL Queries
 Internet --> Storage : Upload/Download
-Internet --> Functions : API REST
-Internet --> Hosting : Hospedagem Web
-Internet --> FCM : Push Protocol
+Internet --> Functions : HTTPS API
+Internet --> API : REST API
+Internet --> Realtime : WebSocket
 
 ' =========================================================
-' CONEXÕES INTERNAS FIREBASE
+' CONEXÕES INTERNAS
 ' =========================================================
 
-Functions --> Firestore : CRUD Dados
-Functions --> Storage : Armazenamento Arquivos
-Functions --> FCM : Envio Notificações
-Functions --> Backup : Rotina Backup
+Functions --> PostgreSQL : SQL Transactions
+Functions --> Storage : Arquivos
+Functions --> Backup : Backup Automático
 Functions --> Monitor : Logs + Métricas
 
-Auth --> Firestore : Validação Usuários
+Auth --> PostgreSQL : Controle Usuários
+
+Realtime --> PostgreSQL : Escuta Eventos
+
+API --> PostgreSQL : Consultas SQL
 
 ' =========================================================
 ' RELATÓRIOS
 ' =========================================================
 
-ReportServer --> Firestore : Consulta Dados
+ReportServer --> PostgreSQL : SELECT SQL
 ReportServer --> Storage : Armazena PDFs
 
-Export --> ReportServer : Solicitação Relatórios
+Export --> ReportServer : Solicita Relatórios
 
 ' =========================================================
 ' SINCRONIZAÇÃO OFFLINE
@@ -286,7 +291,7 @@ Export --> ReportServer : Solicitação Relatórios
 
 SQLite --> Offline : Persistência Local
 Offline --> Sync : Dados Offline
-Sync --> Firestore : Sincronização Cloud
+Sync --> PostgreSQL : Sincronização SQL
 
 ' =========================================================
 ' OBSERVAÇÕES TÉCNICAS
@@ -297,12 +302,12 @@ note right of Android
 ANDROID CLIENT
 
 • React Native + TypeScript
-• Execução Offline
-• SQLite Local
+• SQLite Offline
 • Cache Persistente
-• Push Notifications
+• Execução Offline
 • HTTPS Seguro
-• Sincronização Automática
+• Push Notifications
+• Sincronização SQL
 
 end note
 
@@ -311,34 +316,49 @@ note right of Desktop
 WEB CLIENT
 
 • React.js
-• Execução Browser
+• Browser Runtime
 • HTTPS/TLS
 • Interface Responsiva
 • Administração Sistema
 
 end note
 
-note right of Firebase
+note right of Supabase
 
-GOOGLE FIREBASE CLOUD
+SUPABASE CLOUD PLATFORM
 
-• Alta Disponibilidade
+• PostgreSQL SQL Database
+• Row Level Security (RLS)
+• REST API Automática
+• Realtime WebSocket
+• Edge Functions
 • Escalabilidade Horizontal
-• Segurança JWT
 • Cloud Native
-• Balanceamento Automático
-• Infraestrutura Distribuída
+
+end note
+
+note bottom of PostgreSQL
+
+BANCO DE DADOS SQL
+
+• PostgreSQL Relacional
+• Integridade Referencial
+• Chaves Estrangeiras
+• Constraints
+• Transactions ACID
+• Índices SQL
+• Procedures e Views
 
 end note
 
 note bottom of Backup
 
-POLÍTICAS DE BACKUP
+POLÍTICAS BACKUP
 
-• Backup Diário Automatizado
+• Backup Diário PostgreSQL
 • Recuperação Desastres
 • Logs Auditoria
-• Integridade Dados
+• Integridade Relacional
 • Disponibilidade >= 99.5%
 
 end note
@@ -347,11 +367,12 @@ note bottom of Monitor
 
 MONITORAMENTO
 
-• Logs Performance
+• Monitoramento Queries SQL
 • Logs Segurança
 • Rastreamento Bugs
-• Monitoramento Uptime
 • Métricas Sistema
+• Uptime Infrastructure
 
 end note
+
 @enduml
