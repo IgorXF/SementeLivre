@@ -1,0 +1,28 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+/* Availability */
+.avail_PARA_VENDA { background: var(--color-primary-light); color: var(--color-primary-dark); }
+.avail_PARA_TROCA { background: var(--color-warning-light); color: #92400e; }
+.avail_PARA_DOACAO { background: var(--color-info-light); color: var(--color-info); }
+.avail_INDISPONIVEL { background: var(--color-gray-100); color: var(--color-gray-500); }
+
+/* Order Status */
+.status_PENDENTE { background: var(--color-warning-light); color: #92400e; }
+.status_CONFIRMADO { background: var(--color-primary-light); color: var(--color-primary-dark); }
+.status_CANCELADO { background: var(--color-danger-light); color: var(--color-danger-dark); }
+
+/* Order Type */
+.type_VENDA { background: var(--color-info-light); color: var(--color-info); }
+.type_TROCA { background: var(--color-warning-light); color: #92400e; }
+.type_DOACAO { background: #f3e8ff; color: #7c3aed; }
+
+/* Default */
+.default { background: var(--color-gray-100); color: var(--color-gray-700); }

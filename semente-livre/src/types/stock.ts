@@ -1,0 +1,75 @@
+export enum Pesagem {
+  SACA = 'SACA',
+  KG = 'KG',
+  GRAMA = 'GRAMA',
+  MG = 'MG',
+  UNIDADE = 'UNIDADE',
+}
+
+export const PesagemLabels: Record<Pesagem, string> = {
+  [Pesagem.SACA]: 'Saca',
+  [Pesagem.KG]: 'kg',
+  [Pesagem.GRAMA]: 'Grama',
+  [Pesagem.MG]: 'mg',
+  [Pesagem.UNIDADE]: 'Unidade',
+};
+
+export enum DisponibilidadeProduto {
+  PARA_TROCA = 'PARA_TROCA',
+  PARA_VENDA = 'PARA_VENDA',
+  PARA_DOACAO = 'PARA_DOACAO',
+  INDISPONIVEL = 'INDISPONIVEL',
+}
+
+export const DisponibilidadeLabels: Record<DisponibilidadeProduto, string> = {
+  [DisponibilidadeProduto.PARA_TROCA]: 'Para Troca',
+  [DisponibilidadeProduto.PARA_VENDA]: 'Para Venda',
+  [DisponibilidadeProduto.PARA_DOACAO]: 'Para Doação',
+  [DisponibilidadeProduto.INDISPONIVEL]: 'Indisponível',
+};
+
+export enum TipoMovimentacao {
+  ENTRADA = 'ENTRADA',
+  SAIDA_VENDA = 'SAIDA_VENDA',
+  SAIDA_TROCA = 'SAIDA_TROCA',
+  SAIDA_DOACAO = 'SAIDA_DOACAO',
+  CORRECAO = 'CORRECAO',
+  ZERAMENTO = 'ZERAMENTO',
+}
+
+export const TipoMovimentacaoLabels: Record<TipoMovimentacao, string> = {
+  [TipoMovimentacao.ENTRADA]: 'Entrada',
+  [TipoMovimentacao.SAIDA_VENDA]: 'Saída — Venda',
+  [TipoMovimentacao.SAIDA_TROCA]: 'Saída — Troca',
+  [TipoMovimentacao.SAIDA_DOACAO]: 'Saída — Doação',
+  [TipoMovimentacao.CORRECAO]: 'Correção',
+  [TipoMovimentacao.ZERAMENTO]: 'Zeramento',
+};
+
+export interface Estoque {
+  idEstoque: string;
+  idProprietario: string;
+  idProduto: string;
+  nomePopular: string;
+  urlFoto: string;
+  descricao?: string;
+  preco?: number;
+  formaPrecificacao?: string;
+  quantidade: number;
+  tipoPesagem: Pesagem;
+  disponibilidade: DisponibilidadeProduto;
+  tipo: TipoMovimentacao;
+  dataMovimentacao: Date;
+  dataUltimaAtualizacaoEstoque: Date;
+}
+
+export interface MovimentacaoEstoque {
+  id: string;
+  idProduto: string;
+  idProprietario: string;
+  tipo: TipoMovimentacao;
+  quantidade: number;
+  delta: number;
+  motivo?: string;
+  dataMovimentacao: Date;
+}

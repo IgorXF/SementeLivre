@@ -1,0 +1,57 @@
+'use client';
+
+import React from 'react';
+import { AuthProvider } from '@/context/AuthContext';
+import { NotificationProvider } from '@/context/NotificationContext';
+import { Header } from '@/components/layout/Header';
+import { BottomNavigation } from '@/components/layout/BottomNavigation';
+import { ToastProvider } from '@/components/feedback/Toast';
+import { usePathname } from 'next/navigation';
+import styles from './app.module.css';
+
+const headerConfig: Record<string, { title: string; showBack?: boolean; showNotifications?: boolean }> = {
+  '/dashboard': { title: 'Semente Livre', showNotifications: true },
+  '/sementes': { title: 'Minhas Sementes', showNotifications: true },
+  '/sementes/nova': { title: 'Cadastrar Semente', showBack: true },
+  '/pedidos': { title: 'Pedidos', showNotifications: true },
+  '/pedidos/novo': { title: 'Novo Pedido', showBack: true },
+  '/propriedades': { title: 'Propriedades', showNotifications: true },
+  '/propriedades/nova': { title: 'Nova Propriedade', showBack: true },
+  '/relatorios': { title: 'Relatórios', showBack: true },
+  '/notificacoes': { title: 'Notificações', showBack: true },
+  '/perfil': { title: 'Meu Perfil', showNotifications: true },
+};
+
+function AppLayoutInner({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  const config = Object.entries(headerConfig).find(([key]) =>
+    pathname === key || (key !== '/sementes' && key !== '/pedidos' && key !== '/propriedades' && pathname.startsWith(key + '/'))
+  )?.[1] || { title: 'Semente Livre', showBack: true };
+
+  return (
+    <div className={styles.appShell}>
+      <Header
+        title={config.title}
+        showBack={config.showBack}
+        showNotifications={config.showNotifications}
+      />
+      <main className={styles.content}>
+        {children}
+      </main>
+      <BottomNavigation />
+    </div>
+  );
+}
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AuthProvider>
+      <NotificationProvider>
+        <ToastProvider>
+          <AppLayoutInner>{children}</AppLayoutInner>
+        </ToastProvider>
+      </NotificationProvider>
+    </AuthProvider>
+  );
+}
