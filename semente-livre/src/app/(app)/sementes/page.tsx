@@ -3,16 +3,16 @@
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Search, Plus, Sprout, ChevronRight, PackageSearch, SlidersHorizontal } from 'lucide-react';
 import { useSeeds } from '@/hooks/useSeeds';
 import { DisponibilidadeProduto, DisponibilidadeLabels } from '@/types/stock';
 import { TipoProdutoLabels } from '@/types/seed';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import styles from './sementes.module.css';
 
 const disponibilidadeFilters = [
-  { value: 'TODAS', label: 'Todas' },
+  { value: 'TODAS', label: 'Todos' },
   ...Object.entries(DisponibilidadeLabels).map(([v, l]) => ({ value: v, label: l })),
 ];
 
@@ -24,8 +24,8 @@ export default function SementesPage() {
 
   const filtered = useMemo(() => {
     return seeds.filter((s) => {
-      const matchBusca = busca === '' ||
-        s.nomePopular.toLowerCase().includes(busca.toLowerCase());
+      const matchBusca =
+        busca === '' || s.nomePopular.toLowerCase().includes(busca.toLowerCase());
       const matchDisp = filtroDisp === 'TODAS' || s.disponibilidade === filtroDisp;
       return matchBusca && matchDisp;
     });
@@ -33,20 +33,25 @@ export default function SementesPage() {
 
   return (
     <div className={styles.page}>
+      {/* Search bar */}
       <div className={styles.topBar}>
-        <input
-          type="search"
-          className={styles.search}
-          placeholder="🔍  Buscar semente..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          aria-label="Buscar semente"
-        />
-        <Link href="/sementes/nova">
-          <Button variant="primary" size="md" aria-label="Cadastrar nova semente">+ Nova</Button>
+        <div className={styles.searchWrap}>
+          <Search size={15} strokeWidth={2} className={styles.searchIcon} />
+          <input
+            type="search"
+            className={styles.search}
+            placeholder="Buscar produto..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            aria-label="Buscar produto"
+          />
+        </div>
+        <Link href="/sementes/nova" className={styles.addBtn} aria-label="Cadastrar novo produto">
+          <Plus size={18} strokeWidth={2.5} />
         </Link>
       </div>
 
+      {/* Filters */}
       <div className={styles.filters} role="group" aria-label="Filtrar por disponibilidade">
         {disponibilidadeFilters.map((f) => (
           <button
@@ -60,6 +65,7 @@ export default function SementesPage() {
         ))}
       </div>
 
+      {/* List */}
       {loading ? (
         <div className={styles.list}>
           {[1, 2, 3].map((i) => (
@@ -69,17 +75,21 @@ export default function SementesPage() {
       ) : filtered.length === 0 ? (
         seeds.length === 0 ? (
           <EmptyState
-            icon="🌱"
-            title="Nenhuma semente cadastrada"
-            description="Cadastre sua primeira semente crioula para começar a gerenciar seu banco."
-            actionLabel="Cadastrar Semente"
+            icon={<PackageSearch size={40} strokeWidth={1.5} />}
+            title="Nenhum produto cadastrado"
+            description="Cadastre seu primeiro produto para começar a gerenciar seu estoque."
+            actionLabel="Cadastrar Produto"
             onAction={() => router.push('/sementes/nova')}
           />
         ) : (
-          <EmptyState icon="🔍" title="Nenhum resultado" description="Tente outro filtro ou termo de busca." />
+          <EmptyState
+            icon={<Search size={36} strokeWidth={1.5} />}
+            title="Nenhum resultado"
+            description="Tente outro filtro ou termo de busca."
+          />
         )
       ) : (
-        <ul className={styles.list} aria-label={`${filtered.length} sementes encontradas`}>
+        <ul className={styles.list} aria-label={`${filtered.length} produtos encontrados`}>
           {filtered.map((seed) => (
             <li key={seed.idEstoque}>
               <Link href={`/sementes/${seed.idEstoque}`} className={styles.card}>
@@ -87,7 +97,9 @@ export default function SementesPage() {
                   {seed.urlFoto ? (
                     <img src={seed.urlFoto} alt={`Foto de ${seed.nomePopular}`} className={styles.img} />
                   ) : (
-                    <span className={styles.imgPlaceholder} aria-hidden="true">🌱</span>
+                    <div className={styles.imgPlaceholder} aria-hidden="true">
+                      <Sprout size={22} strokeWidth={1.5} />
+                    </div>
                   )}
                 </div>
                 <div className={styles.cardContent}>
@@ -95,7 +107,7 @@ export default function SementesPage() {
                   <p className={styles.cardQty}>{seed.quantidade} {seed.tipoPesagem}</p>
                   <Badge variant="availability" value={seed.disponibilidade} />
                 </div>
-                <span className={styles.chevron} aria-hidden="true">›</span>
+                <ChevronRight size={16} strokeWidth={2} className={styles.chevron} />
               </Link>
             </li>
           ))}

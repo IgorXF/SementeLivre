@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { Bell, ShoppingCart } from 'lucide-react';
 import { useNotifications } from '@/context/NotificationContext';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/feedback/EmptyState';
@@ -12,9 +13,9 @@ function timeAgo(date: Date): string {
   const m = Math.floor(diff / 60000);
   const h = Math.floor(m / 60);
   const d = Math.floor(h / 24);
-  if (d > 0) return `há ${d} dia${d > 1 ? 's' : ''}`;
-  if (h > 0) return `há ${h} hora${h > 1 ? 's' : ''}`;
-  if (m > 0) return `há ${m} minuto${m > 1 ? 's' : ''}`;
+  if (d > 0) return `ha ${d} dia${d > 1 ? 's' : ''}`;
+  if (h > 0) return `ha ${h} hora${h > 1 ? 's' : ''}`;
+  if (m > 0) return `ha ${m} minuto${m > 1 ? 's' : ''}`;
   return 'agora';
 }
 
@@ -36,7 +37,11 @@ export default function NotificacoesPage() {
       )}
 
       {notifications.length === 0 ? (
-        <EmptyState icon="🔔" title="Nenhuma notificação" description="Você será notificado quando registrar um pedido." />
+        <EmptyState
+          icon={<Bell size={38} strokeWidth={1.5} />}
+          title="Nenhuma notificacao"
+          description="Voce sera notificado quando registrar um pedido."
+        />
       ) : (
         <ul className={styles.list}>
           {notifications.map((n) => (
@@ -44,10 +49,12 @@ export default function NotificacoesPage() {
               <button
                 className={`${styles.item} ${!n.lida ? styles.unread : ''}`}
                 onClick={() => handleNotif(n.idNotificacao, n.idPedido, n.lida)}
-                aria-label={`${n.titulo}${!n.lida ? ' — não lida' : ''}`}
+                aria-label={`${n.titulo}${!n.lida ? ' - nao lida' : ''}`}
               >
                 {!n.lida && <span className={styles.dot} aria-hidden="true" />}
-                <div className={styles.icon} aria-hidden="true">📦</div>
+                <div className={styles.icon} aria-hidden="true">
+                  <ShoppingCart size={16} strokeWidth={2} />
+                </div>
                 <div className={styles.content}>
                   <p className={styles.title}>{n.titulo}</p>
                   <p className={styles.message}>{n.mensagem}</p>

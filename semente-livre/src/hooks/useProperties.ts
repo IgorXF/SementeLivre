@@ -1,19 +1,22 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import {
-  collection, onSnapshot, query, where, orderBy,
-  doc, addDoc, updateDoc, deleteDoc, getDoc, Timestamp, getDocs
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { dbOnSnapshot, dbAdd, dbUpdate, dbDelete } from '@/lib/db';
 import { Propriedade, Comunidade, StatusComunidade } from '@/types/property';
 import { useAuth } from '@/context/AuthContext';
 
-function toDate(val: unknown): Date {
-  if (!val) return new Date();
-  if (val instanceof Date) return val;
-  if (typeof (val as Timestamp).toDate === 'function') return (val as Timestamp).toDate();
-  return new Date(val as string);
+type PropriedadeRow = Propriedade & { id: string };
+type ComunidadeRow = Comunidade & { id: string };
+
+function rowToPropriedade(row: PropriedadeRow): Propriedade {
+  return {
+    ...row,
+    idPropriedade: row.id,
+    dataCadastro: row.dataCadastro ? new Date(row.dataCadastro) : new Date(),
+    dataUltimaAlteracao: row.dataUltimaAlteracao
+      ? new Date(row.dataUltimaAlteracao)
+      : new Date(),
+  };
 }
 
 export function useProperties() {
@@ -22,33 +25,52 @@ export function useProperties() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) { setProperties([]); setLoading(false); return; }
-    const q = query(
-      collection(db, 'propriedades'),
-      where('idProprietario', '==', user.uid),
-      orderBy('dataCadastro', 'desc')
-    );
-    const unsub = onSnapshot(q, (snap) => {
-      setProperties(snap.docs.map((d) => {
-        const data = d.data();
-        return { ...data, idPropriedade: d.id, dataCadastro: toDate(data.dataCadastro), dataUltimaAlteracao: toDate(data.dataUltimaAlteracao) } as Propriedade;
-      }));
+    if (!user) {
+      setProperties([]);
       setLoading(false);
-    }, () => setLoading(false));
-    return () => unsub();
+      return;
+    }
+
+    const unsubscribe = dbOnSnapshot<PropriedadeRow>(
+      'propriedades',
+      (row) => row.idProprietario === user.uid,
+      (rows) => {
+        const sorted = [...rows].sort(
+          (a, b) =>
+            new Date(b.dataCadastro).getTime() - new Date(a.dataCadastro).getTime()
+        );
+        setProperties(sorted.map(rowToPropriedade));
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
   }, [user]);
 
-  const createProperty = useCallback(async (data: Omit<Propriedade, 'idPropriedade'>) => {
-    const docRef = await addDoc(collection(db, 'propriedades'), { ...data, dataCadastro: new Date(), dataUltimaAlteracao: new Date() });
-    return docRef.id;
-  }, []);
+  const createProperty = useCallback(
+    async (data: Omit<Propriedade, 'idPropriedade'>): Promise<string> => {
+      const row = dbAdd<PropriedadeRow>('propriedades', {
+        ...data,
+        dataCadastro: new Date(),
+        dataUltimaAlteracao: new Date(),
+      } as Omit<PropriedadeRow, 'id'>);
+      return row.id;
+    },
+    []
+  );
 
-  const updateProperty = useCallback(async (id: string, data: Partial<Propriedade>) => {
-    await updateDoc(doc(db, 'propriedades', id), { ...data, dataUltimaAlteracao: new Date() });
-  }, []);
+  const updateProperty = useCallback(
+    async (id: string, data: Partial<Propriedade>) => {
+      dbUpdate<PropriedadeRow>('propriedades', id, {
+        ...data,
+        dataUltimaAlteracao: new Date(),
+      } as Partial<PropriedadeRow>);
+    },
+    []
+  );
 
   const deleteProperty = useCallback(async (id: string) => {
-    await deleteDoc(doc(db, 'propriedades', id));
+    dbDelete('propriedades', id);
   }, []);
 
   return { properties, loading, createProperty, updateProperty, deleteProperty };
@@ -58,24 +80,36 @@ export function useCommunities() {
   const [communities, setCommunities] = useState<Comunidade[]>([]);
 
   useEffect(() => {
-    const q = query(collection(db, 'comunidades'), where('status', '==', StatusComunidade.ATIVA));
-    const unsub = onSnapshot(q, (snap) => {
-      setCommunities(snap.docs.map((d) => {
-        const data = d.data();
-        return { ...data, idComunidade: d.id, dataSolicitacao: toDate(data.dataSolicitacao) } as Comunidade;
-      }));
-    }, () => {});
-    return () => unsub();
+    const unsubscribe = dbOnSnapshot<ComunidadeRow>(
+      'comunidades',
+      (row) => row.status === StatusComunidade.ATIVA,
+      (rows) => {
+        setCommunities(
+          rows.map((r) => ({
+            ...r,
+            idComunidade: r.id,
+            dataSolicitacao: r.dataSolicitacao ? new Date(r.dataSolicitacao) : new Date(),
+          }))
+        );
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
-  const requestCommunity = useCallback(async (nome: string, municipio: string, uf: string) => {
-    const docRef = await addDoc(collection(db, 'comunidades'), {
-      nome, municipio, uf,
-      status: StatusComunidade.PENDENTE_APROVACAO,
-      dataSolicitacao: new Date(),
-    });
-    return docRef.id;
-  }, []);
+  const requestCommunity = useCallback(
+    async (nome: string, municipio: string, uf: string): Promise<string> => {
+      const row = dbAdd<ComunidadeRow>('comunidades', {
+        nome,
+        municipio,
+        uf,
+        status: StatusComunidade.PENDENTE_APROVACAO,
+        dataSolicitacao: new Date(),
+      } as Omit<ComunidadeRow, 'id'>);
+      return row.id;
+    },
+    []
+  );
 
   return { communities, requestCommunity };
 }

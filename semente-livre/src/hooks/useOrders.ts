@@ -1,19 +1,18 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import {
-  collection, onSnapshot, query, where, orderBy,
-  doc, addDoc, updateDoc, deleteDoc, getDoc, Timestamp, setDoc
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { dbOnSnapshot, dbAdd, dbUpdate, dbGet } from '@/lib/db';
 import { Pedido, StatusPedido } from '@/types/order';
 import { useAuth } from '@/context/AuthContext';
 
-function toDate(val: unknown): Date {
-  if (!val) return new Date();
-  if (val instanceof Date) return val;
-  if (typeof (val as Timestamp).toDate === 'function') return (val as Timestamp).toDate();
-  return new Date(val as string);
+type PedidoRow = Pedido & { id: string };
+
+function rowToPedido(row: PedidoRow): Pedido {
+  return {
+    ...row,
+    idPedido: row.id,
+    dataPedido: row.dataPedido ? new Date(row.dataPedido) : new Date(),
+  };
 }
 
 export function useOrders() {
@@ -22,53 +21,66 @@ export function useOrders() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) { setOrders([]); setLoading(false); return; }
-    const q = query(
-      collection(db, 'pedidos'),
-      where('idProprietario', '==', user.uid),
-      orderBy('dataPedido', 'desc')
-    );
-    const unsub = onSnapshot(q, (snap) => {
-      setOrders(snap.docs.map((d) => {
-        const data = d.data();
-        return { ...data, idPedido: d.id, dataPedido: toDate(data.dataPedido) } as Pedido;
-      }));
+    if (!user) {
+      setOrders([]);
       setLoading(false);
-    }, () => setLoading(false));
-    return () => unsub();
+      return;
+    }
+
+    const unsubscribe = dbOnSnapshot<PedidoRow>(
+      'pedidos',
+      (row) => row.idProprietario === user.uid,
+      (rows) => {
+        const sorted = [...rows].sort(
+          (a, b) =>
+            new Date(b.dataPedido).getTime() - new Date(a.dataPedido).getTime()
+        );
+        setOrders(sorted.map(rowToPedido));
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
   }, [user]);
 
-  const createOrder = useCallback(async (data: Omit<Pedido, 'idPedido'>) => {
-    const docRef = await addDoc(collection(db, 'pedidos'), { ...data, dataPedido: new Date() });
-    // Create notification
-    await addDoc(collection(db, 'notificacoes'), {
-      idProprietario: data.idProprietario,
-      idPedido: docRef.id,
-      titulo: 'Novo pedido registrado',
-      mensagem: `Pedido de ${data.tipoPedido.toLowerCase()} para ${data.nomeRecebedor} registrado.`,
-      lida: false,
-      dataGeracao: new Date(),
-    });
-    return docRef.id;
-  }, []);
+  const createOrder = useCallback(
+    async (data: Omit<Pedido, 'idPedido'>): Promise<string> => {
+      const row = dbAdd<PedidoRow>('pedidos', {
+        ...data,
+        dataPedido: new Date(),
+      } as Omit<PedidoRow, 'id'>);
+
+      // Create notification
+      dbAdd('notificacoes', {
+        idProprietario: data.idProprietario,
+        idPedido: row.id,
+        titulo: 'Novo pedido registrado',
+        mensagem: `Pedido de ${data.tipoPedido.toLowerCase()} para ${data.nomeRecebedor} registrado.`,
+        lida: false,
+        dataGeracao: new Date(),
+      });
+
+      return row.id;
+    },
+    []
+  );
 
   const updateOrder = useCallback(async (id: string, data: Partial<Pedido>) => {
-    await updateDoc(doc(db, 'pedidos', id), data);
+    dbUpdate<PedidoRow>('pedidos', id, data as Partial<PedidoRow>);
   }, []);
 
   const cancelOrder = useCallback(async (id: string) => {
-    await updateDoc(doc(db, 'pedidos', id), { status: StatusPedido.CANCELADO });
+    dbUpdate<PedidoRow>('pedidos', id, { status: StatusPedido.CANCELADO } as Partial<PedidoRow>);
   }, []);
 
   const confirmOrder = useCallback(async (id: string) => {
-    await updateDoc(doc(db, 'pedidos', id), { status: StatusPedido.CONFIRMADO });
+    dbUpdate<PedidoRow>('pedidos', id, { status: StatusPedido.CONFIRMADO } as Partial<PedidoRow>);
   }, []);
 
   const getOrder = useCallback(async (id: string): Promise<Pedido | null> => {
-    const snap = await getDoc(doc(db, 'pedidos', id));
-    if (!snap.exists()) return null;
-    const data = snap.data();
-    return { ...data, idPedido: snap.id, dataPedido: toDate(data.dataPedido) } as Pedido;
+    const row = dbGet<PedidoRow>('pedidos', id);
+    if (!row) return null;
+    return rowToPedido(row);
   }, []);
 
   return { orders, loading, createOrder, updateOrder, cancelOrder, confirmOrder, getOrder };

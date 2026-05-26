@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ShoppingCart, Search, Plus, ChevronRight } from 'lucide-react';
 import { useOrders } from '@/hooks/useOrders';
 import { StatusPedido, StatusPedidoLabels, TipoPedidoLabels } from '@/types/order';
 import { Badge } from '@/components/ui/badge';
@@ -35,8 +36,8 @@ export default function PedidosPage() {
             </button>
           ))}
         </div>
-        <Link href="/pedidos/novo">
-          <Button variant="primary" size="md" aria-label="Novo pedido">+ Novo</Button>
+        <Link href="/pedidos/novo" className={styles.addBtn} aria-label="Novo pedido">
+          <Plus size={18} strokeWidth={2.5} />
         </Link>
       </div>
 
@@ -46,24 +47,36 @@ export default function PedidosPage() {
         </div>
       ) : filtered.length === 0 ? (
         orders.length === 0 ? (
-          <EmptyState icon="📦" title="Nenhum pedido registrado" description="Registre um pedido de venda, troca ou doação." actionLabel="Registrar Pedido" onAction={() => router.push('/pedidos/novo')} />
+          <EmptyState
+            icon={<ShoppingCart size={38} strokeWidth={1.5} />}
+            title="Nenhum pedido registrado"
+            description="Registre um pedido de venda, troca ou doacao."
+            actionLabel="Registrar Pedido"
+            onAction={() => router.push('/pedidos/novo')}
+          />
         ) : (
-          <EmptyState icon="🔍" title="Nenhum pedido com esse status." />
+          <EmptyState icon={<Search size={34} strokeWidth={1.5} />} title="Nenhum pedido com esse status." />
         )
       ) : (
         <ul className={styles.list}>
           {filtered.map((order) => (
             <li key={order.idPedido}>
               <Link href={`/pedidos/${order.idPedido}`} className={styles.card}>
-                <div className={styles.cardHeader}>
-                  <span className={styles.cardId}>#{order.idPedido.slice(-6).toUpperCase()}</span>
-                  <Badge variant="orderStatus" value={order.status} />
+                <div className={styles.cardIconBox}>
+                  <ShoppingCart size={16} strokeWidth={2} />
                 </div>
-                <p className={styles.cardReceber}>{order.nomeRecebedor}</p>
-                <div className={styles.cardFooter}>
-                  <Badge variant="orderType" value={order.tipoPedido} />
-                  <span className={styles.cardDate}>{order.dataPedido.toLocaleDateString('pt-BR')}</span>
+                <div className={styles.cardBody}>
+                  <div className={styles.cardHeader}>
+                    <span className={styles.cardId}>#{order.idPedido.slice(-6).toUpperCase()}</span>
+                    <Badge variant="orderStatus" value={order.status} />
+                  </div>
+                  <p className={styles.cardReceber}>{order.nomeRecebedor}</p>
+                  <div className={styles.cardFooter}>
+                    <Badge variant="orderType" value={order.tipoPedido} />
+                    <span className={styles.cardDate}>{order.dataPedido.toLocaleDateString('pt-BR')}</span>
+                  </div>
                 </div>
+                <ChevronRight size={16} strokeWidth={2} className={styles.chevron} />
               </Link>
             </li>
           ))}

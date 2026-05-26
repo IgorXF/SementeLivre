@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { Leaf, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { signInAndNotify } from '@/lib/auth';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import styles from './entrar.module.css';
@@ -23,7 +23,7 @@ export default function EntrarPage() {
     if (!email || !senha) { setError('Preencha todos os campos.'); return; }
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, senha);
+      signInAndNotify(email, senha);
       router.push('/dashboard');
     } catch (err: unknown) {
       const code = (err as { code?: string }).code;
@@ -42,7 +42,9 @@ export default function EntrarPage() {
   return (
     <div className={styles.page}>
       <div className={styles.logo}>
-        <span className={styles.logoIcon} aria-hidden="true">🌱</span>
+        <div className={styles.logoIcon} aria-hidden="true">
+          <Leaf size={28} strokeWidth={2} />
+        </div>
         <h1 className={styles.logoText}>Semente Livre</h1>
         <p className={styles.logoSub}>IF Sudeste MG</p>
       </div>
@@ -52,7 +54,8 @@ export default function EntrarPage() {
 
         {error && (
           <div className={styles.errorBox} role="alert" aria-live="assertive">
-            ⚠ {error}
+            <AlertCircle size={15} strokeWidth={2.5} />
+            {error}
           </div>
         )}
 
@@ -75,7 +78,7 @@ export default function EntrarPage() {
           autoComplete="current-password"
           required
           placeholder="Sua senha"
-          rightIcon={<span style={{ fontSize: 18 }}>{showSenha ? '🙈' : '👁'}</span>}
+          rightIcon={showSenha ? <EyeOff size={17} strokeWidth={2} /> : <Eye size={17} strokeWidth={2} />}
           onRightIconClick={() => setShowSenha(!showSenha)}
         />
 

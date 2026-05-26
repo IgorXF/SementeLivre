@@ -3,17 +3,14 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import {
   onAuthStateChanged,
-  signOut,
-  User,
-  browserLocalPersistence,
-  setPersistence,
-} from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
+  signOutAndNotify,
+  Session,
+} from '@/lib/auth';
+import { dbGet } from '@/lib/db';
 import { Proprietario } from '@/types/user';
 
 interface AuthContextType {
-  user: User | null;
+  user: Session | null;
   proprietario: Proprietario | null;
   loading: boolean;
   logout: () => Promise<void>;
@@ -27,7 +24,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Session | null>(null);
   const [proprietario, setProprietario] = useState<Proprietario | null>(null);
   const [loading, setLoading] = useState(true);
   const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -35,20 +32,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const resetTimer = () => {
     if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
     inactivityTimer.current = setTimeout(() => {
-      signOut(auth);
+      signOutAndNotify();
     }, 30 * 60 * 1000); // 30 min
   };
 
   useEffect(() => {
-    setPersistence(auth, browserLocalPersistence).catch(() => {});
-
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
-      if (firebaseUser) {
+    const unsubscribe = onAuthStateChanged(async (session) => {
+      setUser(session);
+      if (session) {
         try {
-          const snap = await getDoc(doc(db, 'proprietarios', firebaseUser.uid));
-          if (snap.exists()) {
-            setProprietario({ ...snap.data(), idProprietario: snap.id } as Proprietario);
+          const prop = dbGet<Proprietario & { id: string }>('proprietarios', session.uid);
+          if (prop) {
+            setProprietario({ ...prop, idProprietario: prop.id });
+          } else {
+            setProprietario(null);
           }
         } catch {
           setProprietario(null);
@@ -68,10 +65,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
       events.forEach((e) => document.removeEventListener(e, resetTimer));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const logout = async () => {
-    await signOut(auth);
+    signOutAndNotify();
   };
 
   return (

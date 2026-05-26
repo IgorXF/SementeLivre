@@ -1,20 +1,22 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import {
-  collection, onSnapshot, query, where, orderBy,
-  doc, addDoc, updateDoc, deleteDoc, getDoc, Timestamp
-} from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '@/lib/firebase';
-import { Estoque, TipoMovimentacao, DisponibilidadeProduto } from '@/types/stock';
+import { dbOnSnapshot, dbAdd, dbUpdate, dbDelete, dbGet } from '@/lib/db';
+import { uploadFile, getDownloadURL } from '@/lib/storage';
+import { Estoque } from '@/types/stock';
 import { useAuth } from '@/context/AuthContext';
 
-function toDate(val: unknown): Date {
-  if (!val) return new Date();
-  if (val instanceof Date) return val;
-  if (typeof (val as Timestamp).toDate === 'function') return (val as Timestamp).toDate();
-  return new Date(val as string);
+type EstoqueRow = Estoque & { id: string };
+
+function rowToEstoque(row: EstoqueRow): Estoque {
+  return {
+    ...row,
+    idEstoque: row.id,
+    dataMovimentacao: row.dataMovimentacao ? new Date(row.dataMovimentacao) : new Date(),
+    dataUltimaAtualizacaoEstoque: row.dataUltimaAtualizacaoEstoque
+      ? new Date(row.dataUltimaAtualizacaoEstoque)
+      : new Date(),
+  };
 }
 
 export function useSeeds() {
@@ -24,52 +26,64 @@ export function useSeeds() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user) { setSeeds([]); setLoading(false); return; }
-    const q = query(
-      collection(db, 'estoques'),
-      where('idProprietario', '==', user.uid),
-      orderBy('dataMovimentacao', 'desc')
-    );
-    const unsub = onSnapshot(q, (snap) => {
-      setSeeds(snap.docs.map((d) => {
-        const data = d.data();
-        return {
-          ...data, idEstoque: d.id,
-          dataMovimentacao: toDate(data.dataMovimentacao),
-          dataUltimaAtualizacaoEstoque: toDate(data.dataUltimaAtualizacaoEstoque),
-        } as Estoque;
-      }));
+    if (!user) {
+      setSeeds([]);
       setLoading(false);
-    }, (err) => { setError(err.message); setLoading(false); });
-    return () => unsub();
+      return;
+    }
+
+    const unsubscribe = dbOnSnapshot<EstoqueRow>(
+      'estoques',
+      (row) => row.idProprietario === user.uid,
+      (rows) => {
+        const sorted = [...rows].sort(
+          (a, b) =>
+            new Date(b.dataMovimentacao).getTime() - new Date(a.dataMovimentacao).getTime()
+        );
+        setSeeds(sorted.map(rowToEstoque));
+        setLoading(false);
+        setError(null);
+      }
+    );
+
+    return () => unsubscribe();
   }, [user]);
 
-  const createSeed = useCallback(async (data: Omit<Estoque, 'idEstoque'>) => {
-    const docRef = await addDoc(collection(db, 'estoques'), {
-      ...data, dataMovimentacao: new Date(), dataUltimaAtualizacaoEstoque: new Date(),
-    });
-    return docRef.id;
-  }, []);
+  const createSeed = useCallback(
+    async (data: Omit<Estoque, 'idEstoque'>): Promise<string> => {
+      const row = dbAdd<EstoqueRow>('estoques', {
+        ...data,
+        dataMovimentacao: new Date(),
+        dataUltimaAtualizacaoEstoque: new Date(),
+      } as Omit<EstoqueRow, 'id'>);
+      return row.id;
+    },
+    []
+  );
 
   const updateSeed = useCallback(async (id: string, data: Partial<Estoque>) => {
-    await updateDoc(doc(db, 'estoques', id), { ...data, dataUltimaAtualizacaoEstoque: new Date() });
+    dbUpdate<EstoqueRow>('estoques', id, {
+      ...data,
+      dataUltimaAtualizacaoEstoque: new Date(),
+    } as Partial<EstoqueRow>);
   }, []);
 
   const deleteSeed = useCallback(async (id: string) => {
-    await deleteDoc(doc(db, 'estoques', id));
+    dbDelete('estoques', id);
   }, []);
 
-  const uploadSeedPhoto = useCallback(async (file: File, seedId: string): Promise<string> => {
-    const storageRef = ref(storage, `sementes/${seedId}/${file.name}`);
-    await uploadBytes(storageRef, file);
-    return getDownloadURL(storageRef);
-  }, []);
+  const uploadSeedPhoto = useCallback(
+    async (file: File, seedId: string): Promise<string> => {
+      const path = `sementes/${seedId}/${file.name}`;
+      return uploadFile(path, file);
+    },
+    []
+  );
 
   const getSeed = useCallback(async (id: string): Promise<Estoque | null> => {
-    const snap = await getDoc(doc(db, 'estoques', id));
-    if (!snap.exists()) return null;
-    const data = snap.data();
-    return { ...data, idEstoque: snap.id, dataMovimentacao: toDate(data.dataMovimentacao), dataUltimaAtualizacaoEstoque: toDate(data.dataUltimaAtualizacaoEstoque) } as Estoque;
+    const row = dbGet<EstoqueRow>('estoques', id);
+    if (!row) return null;
+    return rowToEstoque(row);
   }, []);
 
   return { seeds, loading, error, createSeed, updateSeed, deleteSeed, uploadSeedPhoto, getSeed };

@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { sendPasswordResetEmail } from '@/lib/auth';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import styles from '../entrar/entrar.module.css';
@@ -20,7 +19,7 @@ export default function RecuperarSenhaPage() {
     setError('');
     setLoading(true);
     try {
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(email);
       setSent(true);
     } catch {
       // Don't reveal if email exists

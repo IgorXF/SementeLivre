@@ -1,7 +1,9 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 200;
   display: flex;
   align-items: flex-end;
@@ -10,7 +12,8 @@
 }
 
 .panel {
-  background: var(--color-white);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
   width: 100%;
   max-width: var(--max-content-width);
@@ -25,32 +28,34 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-5) var(--space-5) var(--space-4);
-  border-bottom: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .title {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-black);
+  color: var(--color-text);
+  letter-spacing: -0.01em;
 }
 
 .closeBtn {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
-  background: var(--color-gray-100);
-  border-radius: var(--radius-full);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  color: var(--color-gray-700);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .closeBtn:hover {
-  background: var(--color-gray-300);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .body {

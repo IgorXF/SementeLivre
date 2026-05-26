@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft, Bell, BellDot, Leaf } from 'lucide-react';
 import styles from './Header.module.css';
 import { useNotifications } from '@/context/NotificationContext';
 
@@ -21,23 +22,35 @@ export function Header({ title, showBack = false, actions, showNotifications = f
     <header className={styles.header} role="banner">
       <div className={styles.inner}>
         <div className={styles.left}>
-          {showBack && (
+          {showBack ? (
             <button
               type="button"
               onClick={() => router.back()}
               className={styles.backBtn}
               aria-label="Voltar"
             >
-              ←
+              <ArrowLeft size={18} strokeWidth={2.5} />
             </button>
+          ) : (
+            <div className={styles.logoMark} aria-hidden="true">
+              <Leaf size={16} strokeWidth={2.5} />
+            </div>
           )}
           <h1 className={styles.title}>{title}</h1>
         </div>
         <div className={styles.right}>
           {actions}
           {showNotifications && (
-            <Link href="/notificacoes" className={styles.notifBtn} aria-label={`Notificações${unreadCount > 0 ? `, ${unreadCount} não lidas` : ''}`}>
-              🔔
+            <Link
+              href="/notificacoes"
+              className={styles.notifBtn}
+              aria-label={`Notificações${unreadCount > 0 ? `, ${unreadCount} não lidas` : ''}`}
+            >
+              {unreadCount > 0 ? (
+                <BellDot size={19} strokeWidth={2} className={styles.bellActive} />
+              ) : (
+                <Bell size={19} strokeWidth={2} />
+              )}
               {unreadCount > 0 && (
                 <span className={styles.badge} aria-hidden="true">
                   {unreadCount > 9 ? '9+' : unreadCount}

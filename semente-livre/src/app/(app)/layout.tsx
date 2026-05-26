@@ -11,8 +11,8 @@ import styles from './app.module.css';
 
 const headerConfig: Record<string, { title: string; showBack?: boolean; showNotifications?: boolean }> = {
   '/dashboard': { title: 'Semente Livre', showNotifications: true },
-  '/sementes': { title: 'Minhas Sementes', showNotifications: true },
-  '/sementes/nova': { title: 'Cadastrar Semente', showBack: true },
+  '/sementes': { title: 'Meus Produtos', showNotifications: true },
+  '/sementes/nova': { title: 'Cadastrar Produto', showBack: true },
   '/pedidos': { title: 'Pedidos', showNotifications: true },
   '/pedidos/novo': { title: 'Novo Pedido', showBack: true },
   '/propriedades': { title: 'Propriedades', showNotifications: true },

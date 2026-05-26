@@ -1,8 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { collection, onSnapshot, query, where, orderBy, doc, updateDoc, writeBatch } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { dbOnSnapshot, dbUpdate } from '@/lib/db';
 import { Notificacao } from '@/types/notification';
 import { useAuth } from './AuthContext';
 
@@ -20,53 +19,48 @@ const NotificationContext = createContext<NotificationContextType>({
   markAllAsRead: async () => {},
 });
 
+type NotificacaoRow = Notificacao & { id: string };
+
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notificacao[]>([]);
 
   useEffect(() => {
-    if (!user) { setNotifications([]); return; }
+    if (!user) {
+      setNotifications([]);
+      return;
+    }
 
-    const q = query(
-      collection(db, 'notificacoes'),
-      where('idProprietario', '==', user.uid),
-      orderBy('dataGeracao', 'desc')
+    const unsubscribe = dbOnSnapshot<NotificacaoRow>(
+      'notificacoes',
+      (row) => row.idProprietario === user.uid,
+      (rows) => {
+        const sorted = [...rows].sort(
+          (a, b) =>
+            new Date(b.dataGeracao).getTime() - new Date(a.dataGeracao).getTime()
+        );
+        setNotifications(sorted.map((r) => ({ ...r, idNotificacao: r.id })));
+      }
     );
-
-    const unsubscribe = onSnapshot(q, (snap) => {
-      const data = snap.docs.map((d) => {
-        const raw = d.data();
-        return {
-          ...raw,
-          idNotificacao: d.id,
-          dataGeracao: raw.dataGeracao?.toDate?.() ?? new Date(),
-          dataLeitura: raw.dataLeitura?.toDate?.() ?? undefined,
-        } as Notificacao;
-      });
-      setNotifications(data);
-    }, () => {});
 
     return () => unsubscribe();
   }, [user]);
 
   const markAsRead = async (id: string) => {
-    await updateDoc(doc(db, 'notificacoes', id), {
+    dbUpdate<NotificacaoRow>('notificacoes', id, {
       lida: true,
       dataLeitura: new Date(),
-    });
+    } as Partial<NotificacaoRow>);
   };
 
   const markAllAsRead = async () => {
     const unread = notifications.filter((n) => !n.lida);
-    if (!unread.length) return;
-    const batch = writeBatch(db);
     unread.forEach((n) => {
-      batch.update(doc(db, 'notificacoes', n.idNotificacao), {
+      dbUpdate<NotificacaoRow>('notificacoes', n.idNotificacao, {
         lida: true,
         dataLeitura: new Date(),
-      });
+      } as Partial<NotificacaoRow>);
     });
-    await batch.commit();
   };
 
   const unreadCount = notifications.filter((n) => !n.lida).length;

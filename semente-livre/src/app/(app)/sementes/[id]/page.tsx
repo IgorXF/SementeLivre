@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { Sprout, BarChart2, List, Pencil, Trash2, PackageSearch } from 'lucide-react';
 import { useSeeds } from '@/hooks/useSeeds';
 import { useToast } from '@/components/feedback/Toast';
 import { Estoque, DisponibilidadeLabels, PesagemLabels, TipoMovimentacao } from '@/types/stock';
@@ -38,7 +39,7 @@ export default function SementeDetailPage() {
   }, [id, getSeed]);
 
   if (loading) return <div className={styles.loading}><div className="skeleton" style={{ height: 200, borderRadius: 16 }} /></div>;
-  if (!seed) return <EmptyState icon="🌱" title="Semente não encontrada" actionLabel="Voltar" onAction={() => router.push('/sementes')} />;
+  if (!seed) return <EmptyState icon={<PackageSearch size={38} strokeWidth={1.5} />} title="Produto nao encontrado" actionLabel="Voltar" onAction={() => router.push('/sementes')} />;
 
   const handleSave = async () => {
     setSaving(true);
@@ -46,7 +47,7 @@ export default function SementeDetailPage() {
       await updateSeed(id, editForm);
       setSeed((prev) => prev ? { ...prev, ...editForm } : prev);
       setEditing(false);
-      showToast('Semente atualizada!', 'success');
+      showToast('Produto atualizado!', 'success');
     } catch { showToast('Erro ao salvar.', 'error'); }
     finally { setSaving(false); }
   };
@@ -55,7 +56,7 @@ export default function SementeDetailPage() {
     setDeleting(true);
     try {
       await deleteSeed(id);
-      showToast('Semente removida.', 'success');
+      showToast('Produto removido.', 'success');
       router.push('/sementes');
     } catch { showToast('Erro ao excluir.', 'error'); }
     finally { setDeleting(false); }
@@ -65,7 +66,7 @@ export default function SementeDetailPage() {
     const delta = Number(ajusteQty);
     if (!delta || delta <= 0) return;
     const novaQty = ajusteDir === 'Adicionar' ? seed.quantidade + delta : seed.quantidade - delta;
-    if (novaQty < 0) { showToast('Estoque não pode ser negativo.', 'error'); return; }
+    if (novaQty < 0) { showToast('Estoque nao pode ser negativo.', 'error'); return; }
     setSaving(true);
     try {
       await updateSeed(id, { quantidade: novaQty });
@@ -84,7 +85,9 @@ export default function SementeDetailPage() {
         {seed.urlFoto ? (
           <img src={seed.urlFoto} alt={`Foto de ${seed.nomePopular}`} className={styles.heroImg} />
         ) : (
-          <div className={styles.heroPlaceholder}><span aria-hidden="true">🌱</span></div>
+          <div className={styles.heroPlaceholder}>
+            <Sprout size={48} strokeWidth={1.5} />
+          </div>
         )}
       </div>
 
@@ -113,7 +116,7 @@ export default function SementeDetailPage() {
               </div>
               {seed.preco && (
                 <div className={styles.gridItem}>
-                  <span className={styles.gridLabel}>Preço</span>
+                  <span className={styles.gridLabel}>Preco</span>
                   <span className={styles.gridValue}>R$ {seed.preco.toFixed(2)}</span>
                 </div>
               )}
@@ -122,15 +125,27 @@ export default function SementeDetailPage() {
 
           {/* Estoque actions */}
           <div className={styles.stockSection}>
-            <Button variant="secondary" fullWidth onClick={() => setShowAjuste(true)}>📊 Ajustar Estoque</Button>
+            <Button variant="secondary" fullWidth onClick={() => setShowAjuste(true)}>
+              <BarChart2 size={16} strokeWidth={2} />
+              Ajustar Estoque
+            </Button>
             <Link href={`/sementes/${id}/estoque`}>
-              <Button variant="ghost" fullWidth>Ver Movimentações</Button>
+              <Button variant="ghost" fullWidth>
+                <List size={16} strokeWidth={2} />
+                Ver Movimentacoes
+              </Button>
             </Link>
           </div>
 
           <div className={styles.actions}>
-            <Button variant="ghost" fullWidth onClick={() => { setEditing(true); setEditForm({}); }}>✏️ Editar</Button>
-            <Button variant="danger" fullWidth onClick={() => setShowDelete(true)}>🗑 Excluir</Button>
+            <Button variant="ghost" fullWidth onClick={() => { setEditing(true); setEditForm({}); }}>
+              <Pencil size={15} strokeWidth={2} />
+              Editar
+            </Button>
+            <Button variant="danger" fullWidth onClick={() => setShowDelete(true)}>
+              <Trash2 size={15} strokeWidth={2} />
+              Excluir
+            </Button>
           </div>
         </>
       )}
@@ -149,8 +164,8 @@ export default function SementeDetailPage() {
       {/* Delete confirm */}
       <ConfirmDialog
         isOpen={showDelete}
-        title="Excluir Semente"
-        description="Tem certeza? A semente será removida, mas os pedidos anteriores serão mantidos."
+        title="Excluir Produto"
+        description="Tem certeza? O produto sera removido, mas os pedidos anteriores serao mantidos."
         confirmLabel="Excluir"
         confirmVariant="danger"
         onConfirm={handleDelete}

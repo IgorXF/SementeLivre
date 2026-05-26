@@ -6,9 +6,11 @@
 }
 
 .label {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-gray-700);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .required {
@@ -27,22 +29,23 @@
   min-height: var(--min-touch-target);
   padding: var(--space-3) var(--space-4);
   font-family: var(--font-family);
-  font-size: var(--font-size-base);
-  color: var(--color-black);
-  background-color: var(--color-white);
-  border: 1.5px solid var(--color-gray-300);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   outline: none;
 }
 
 .input:focus {
-  border-color: var(--color-primary);
-  box-shadow: var(--focus-ring);
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
+  background: var(--color-surface-2);
 }
 
 .input::placeholder {
-  color: var(--color-gray-300);
+  color: var(--color-text-muted);
 }
 
 .input.hasLeft {
@@ -58,7 +61,7 @@
 }
 
 .input.error:focus {
-  box-shadow: 0 0 0 3px rgba(205, 25, 30, 0.2);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
 }
 
 .leftIcon,
@@ -67,7 +70,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-gray-500);
+  color: var(--color-text-muted);
   pointer-events: none;
 }
 
@@ -83,7 +86,7 @@
 
 .hint {
   font-size: var(--font-size-xs);
-  color: var(--color-gray-500);
+  color: var(--color-text-muted);
 }
 
 .errorMessage {

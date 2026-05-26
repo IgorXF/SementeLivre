@@ -3,9 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
+import { createUserAndNotify } from '@/lib/auth';
+import { dbSet } from '@/lib/db';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { fetchCEP, formatCPF, formatTelefone, formatCEP, validateCPF } from '@/lib/validators';
@@ -70,9 +69,10 @@ export default function CadastrarPage() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const cred = await createUserWithEmailAndPassword(auth, form.email, form.senha);
-      await setDoc(doc(db, 'proprietarios', cred.user.uid), {
-        idProprietario: cred.user.uid,
+      const { user: newUser } = createUserAndNotify(form.email, form.senha);
+      dbSet('proprietarios', {
+        id: newUser.uid,
+        idProprietario: newUser.uid,
         nome: form.nome, rg: form.rg,
         documento: form.cpf.replace(/\D/g, ''), tipoDocumento: 'CPF',
         telefone: form.telefone, email: form.email,

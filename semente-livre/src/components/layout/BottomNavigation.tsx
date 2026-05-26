@@ -2,15 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { LayoutDashboard, Package, ShoppingCart, MapPin, User } from 'lucide-react';
 import styles from './BottomNavigation.module.css';
 
 const navItems = [
-  { href: '/dashboard', label: 'Início', icon: '🏠' },
-  { href: '/sementes', label: 'Sementes', icon: '🌱' },
-  { href: '/pedidos', label: 'Pedidos', icon: '📦' },
-  { href: '/propriedades', label: 'Propriedades', icon: '🏡' },
-  { href: '/perfil', label: 'Perfil', icon: '👤' },
+  { href: '/dashboard', label: 'Início', Icon: LayoutDashboard },
+  { href: '/sementes', label: 'Produtos', Icon: Package },
+  { href: '/pedidos', label: 'Pedidos', Icon: ShoppingCart },
+  { href: '/propriedades', label: 'Propriedades', Icon: MapPin },
+  { href: '/perfil', label: 'Perfil', Icon: User },
 ];
 
 export function BottomNavigation() {
@@ -30,9 +31,14 @@ export function BottomNavigation() {
               aria-selected={isActive}
               aria-current={isActive ? 'page' : undefined}
             >
-              <span className={styles.icon} aria-hidden="true">{item.icon}</span>
+              <span className={styles.iconWrap} aria-hidden="true">
+                <item.Icon
+                  size={20}
+                  strokeWidth={isActive ? 2.5 : 1.75}
+                  className={styles.iconSvg}
+                />
+              </span>
               <span className={styles.label}>{item.label}</span>
-              {isActive && <span className={styles.indicator} aria-hidden="true" />}
             </Link>
           );
         })}
