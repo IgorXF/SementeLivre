@@ -83,7 +83,7 @@
   color: var(--color-text);
 }
 
-.chipActive {
+.chip.chipActive {
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   border-color: transparent;
   color: white;
