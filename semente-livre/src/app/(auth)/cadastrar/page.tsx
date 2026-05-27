@@ -8,6 +8,7 @@ import { dbSet } from '@/lib/db';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { AnimatedPlantSVG } from '@/components/icons/AnimatedPlantSVG';
+import { fetchCEP, formatCPF, formatTelefone, formatCEP, validateCPF } from '@/lib/validators';
 import styles from '../entrar/entrar.module.css';
 import authStyles from '../auth.module.css';
 import formStyles from './cadastrar.module.css';

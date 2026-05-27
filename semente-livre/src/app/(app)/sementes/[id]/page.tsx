@@ -170,11 +170,11 @@ export default function SementeDetailPage() {
           </div>
 
           {/* Pedidos vinculados */}
-          {orders.filter(o => o.itens.some(i => i.idSemente === id)).length > 0 && (
+          {orders.filter(o => o.itens.some(i => i.idProduto === id)).length > 0 && (
             <div className={styles.ordersSection}>
               <h3 className={styles.sectionTitle}>Pedidos com este produto</h3>
               <ul className={styles.orderList}>
-                {orders.filter(o => o.itens.some(i => i.idSemente === id)).map((order) => (
+                {orders.filter(o => o.itens.some(i => i.idProduto === id)).map((order) => (
                   <li key={order.idPedido}>
                     <Link href={`/pedidos/${order.idPedido}`} className={styles.orderCard}>
                       <div className={styles.orderIcon}>

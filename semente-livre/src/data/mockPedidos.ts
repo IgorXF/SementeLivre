@@ -4,35 +4,39 @@ export const mockPedidos: Pedido[] = [
   {
     idPedido: 'mock-pedido-1',
     idProprietario: 'any',
-    idRecebedor: 'comprador-1',
     nomeRecebedor: 'Fazenda Boa Esperança',
     tipoPedido: TipoPedido.VENDA,
     status: StatusPedido.PENDENTE,
     dataPedido: new Date('2026-05-24'),
     itens: [
       {
-        idSemente: 'mock-semente-1',
+        idItem: 'item-1',
+        idProduto: 'mock-semente-1',
+        nomePopular: 'Milho Crioulo',
         quantidade: 10,
+        tipoPesagem: 'KG',
         precoUnitario: 25.5
       }
     ],
-    valorTotal: 255.0,
-    notas: 'Entregar na portaria principal'
+    totalValor: 255.0,
+    mensagemOpcional: 'Entregar na portaria principal'
   },
   {
     idPedido: 'mock-pedido-2',
     idProprietario: 'any',
-    idRecebedor: 'comprador-2',
     nomeRecebedor: 'Associação de Agricultores',
     tipoPedido: TipoPedido.DOACAO,
     status: StatusPedido.CONFIRMADO,
     dataPedido: new Date('2026-05-25'),
     itens: [
       {
-        idSemente: 'mock-semente-4',
+        idItem: 'item-2',
+        idProduto: 'mock-semente-4',
+        nomePopular: 'Muda de Laranjeira',
         quantidade: 100,
+        tipoPesagem: 'UNIDADE'
       }
     ],
-    valorTotal: 0,
+    totalValor: 0,
   }
 ];
