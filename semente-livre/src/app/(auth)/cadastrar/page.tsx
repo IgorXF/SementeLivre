@@ -7,8 +7,9 @@ import { createUserAndNotify } from '@/lib/auth';
 import { dbSet } from '@/lib/db';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { fetchCEP, formatCPF, formatTelefone, formatCEP, validateCPF } from '@/lib/validators';
+import { AnimatedPlantSVG } from '@/components/icons/AnimatedPlantSVG';
 import styles from '../entrar/entrar.module.css';
+import authStyles from '../auth.module.css';
 import formStyles from './cadastrar.module.css';
 
 export default function CadastrarPage() {
@@ -95,60 +96,71 @@ export default function CadastrarPage() {
   };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.logo}>
-        <span style={{ fontSize: '2.5rem' }} aria-hidden="true">🌱</span>
-        <h1 className={styles.logoText}>Criar Conta</h1>
-        <p className={styles.logoSub}>Semente Livre</p>
+    <div className={authStyles.container}>
+      <div className={authStyles.hero}>
+        <div className={`${authStyles.blob} ${authStyles.blob1}`}></div>
+        <div className={`${authStyles.blob} ${authStyles.blob2}`}></div>
+        
+        <div className={authStyles.heroHeader}>
+          <h1 className={authStyles.heroTitle}>Semente Livre</h1>
+          <p className={authStyles.heroSub}>IF Sudeste MG</p>
+        </div>
+
+        <div className={authStyles.svgWrapper}>
+          <AnimatedPlantSVG />
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className={formStyles.form} noValidate>
-        {error && <div className={styles.errorBox} role="alert">⚠ {error}</div>}
+      <div className={authStyles.formContainer}>
+        <form onSubmit={handleSubmit} className={formStyles.form} noValidate>
+          <h2 className={styles.title}>Criar Conta</h2>
+          {error && <div className={styles.errorBox} role="alert">⚠ {error}</div>}
 
-        <fieldset className={formStyles.fieldset}>
-          <legend className={formStyles.legend}>Dados Pessoais</legend>
-          <Input label="Nome completo" value={form.nome} onChange={(e) => set('nome', e.target.value)} error={errors.nome} required />
-          <div className={formStyles.row}>
-            <Input label="CPF" value={form.cpf} onChange={(e) => set('cpf', formatCPF(e.target.value))} error={errors.cpf} inputMode="numeric" required placeholder="000.000.000-00" />
-            <Input label="RG" value={form.rg} onChange={(e) => set('rg', e.target.value)} inputMode="numeric" placeholder="Opcional" />
-          </div>
-          <Input label="Telefone" value={form.telefone} onChange={(e) => set('telefone', formatTelefone(e.target.value))} inputMode="tel" placeholder="(00) 00000-0000" />
-        </fieldset>
-
-        <fieldset className={formStyles.fieldset}>
-          <legend className={formStyles.legend}>Acesso</legend>
-          <Input label="E-mail" type="email" value={form.email} onChange={(e) => set('email', e.target.value)} error={errors.email} autoComplete="email" required />
-          <Input label="Senha" type="password" value={form.senha} onChange={(e) => set('senha', e.target.value)} error={errors.senha} autoComplete="new-password" required />
-          <Input label="Confirmar Senha" type="password" value={form.confirmarSenha} onChange={(e) => set('confirmarSenha', e.target.value)} error={errors.confirmarSenha} autoComplete="new-password" required />
-        </fieldset>
-
-        <fieldset className={formStyles.fieldset}>
-          <legend className={formStyles.legend}>Endereço</legend>
-          <Input label="CEP" value={form.cep} onChange={(e) => handleCEP(e.target.value)} error={errors.cep} inputMode="numeric" required placeholder="00000-000" hint={loadingCEP ? 'Buscando CEP...' : undefined} />
-          <Input label="Logradouro" value={form.logradouro} onChange={(e) => set('logradouro', e.target.value)} error={errors.logradouro} required />
-          <div className={formStyles.row}>
-            <Input label="Número" value={form.numero} onChange={(e) => set('numero', e.target.value)} error={errors.numero} required />
-            <Input label="Complemento" value={form.complemento} onChange={(e) => set('complemento', e.target.value)} placeholder="Opcional" />
-          </div>
-          <Input label="Bairro" value={form.bairro} onChange={(e) => set('bairro', e.target.value)} />
-          <div className={formStyles.row}>
-            <div style={{ flex: 2 }}>
-              <Input label="Município" value={form.municipio} onChange={(e) => set('municipio', e.target.value)} error={errors.municipio} required />
+          <fieldset className={formStyles.fieldset}>
+            <legend className={formStyles.legend}>Dados Pessoais</legend>
+            <Input label="Nome completo" value={form.nome} onChange={(e) => set('nome', e.target.value)} error={errors.nome} required />
+            <div className={formStyles.row}>
+              <Input label="CPF" value={form.cpf} onChange={(e) => set('cpf', formatCPF(e.target.value))} error={errors.cpf} inputMode="numeric" required placeholder="000.000.000-00" />
+              <Input label="RG" value={form.rg} onChange={(e) => set('rg', e.target.value)} inputMode="numeric" placeholder="Opcional" />
             </div>
-            <div style={{ flex: 1 }}>
-              <Input label="UF" value={form.uf} onChange={(e) => set('uf', e.target.value.toUpperCase().slice(0, 2))} error={errors.uf} required maxLength={2} />
+            <Input label="Telefone" value={form.telefone} onChange={(e) => set('telefone', formatTelefone(e.target.value))} inputMode="tel" placeholder="(00) 00000-0000" />
+          </fieldset>
+
+          <fieldset className={formStyles.fieldset}>
+            <legend className={formStyles.legend}>Acesso</legend>
+            <Input label="E-mail" type="email" value={form.email} onChange={(e) => set('email', e.target.value)} error={errors.email} autoComplete="email" required />
+            <Input label="Senha" type="password" value={form.senha} onChange={(e) => set('senha', e.target.value)} error={errors.senha} autoComplete="new-password" required />
+            <Input label="Confirmar Senha" type="password" value={form.confirmarSenha} onChange={(e) => set('confirmarSenha', e.target.value)} error={errors.confirmarSenha} autoComplete="new-password" required />
+          </fieldset>
+
+          <fieldset className={formStyles.fieldset}>
+            <legend className={formStyles.legend}>Endereço</legend>
+            <Input label="CEP" value={form.cep} onChange={(e) => handleCEP(e.target.value)} error={errors.cep} inputMode="numeric" required placeholder="00000-000" hint={loadingCEP ? 'Buscando CEP...' : undefined} />
+            <Input label="Logradouro" value={form.logradouro} onChange={(e) => set('logradouro', e.target.value)} error={errors.logradouro} required />
+            <div className={formStyles.row}>
+              <Input label="Número" value={form.numero} onChange={(e) => set('numero', e.target.value)} error={errors.numero} required />
+              <Input label="Complemento" value={form.complemento} onChange={(e) => set('complemento', e.target.value)} placeholder="Opcional" />
             </div>
-          </div>
-        </fieldset>
+            <Input label="Bairro" value={form.bairro} onChange={(e) => set('bairro', e.target.value)} />
+            <div className={formStyles.row}>
+              <div style={{ flex: 2 }}>
+                <Input label="Município" value={form.municipio} onChange={(e) => set('municipio', e.target.value)} error={errors.municipio} required />
+              </div>
+              <div style={{ flex: 1 }}>
+                <Input label="UF" value={form.uf} onChange={(e) => set('uf', e.target.value.toUpperCase().slice(0, 2))} error={errors.uf} required maxLength={2} />
+              </div>
+            </div>
+          </fieldset>
 
-        <Button type="submit" fullWidth loading={loading} size="lg">
-          Criar Conta
-        </Button>
-      </form>
+          <Button type="submit" fullWidth loading={loading} size="lg">
+            Criar Conta
+          </Button>
+        </form>
 
-      <p className={styles.registerLink}>
-        Já tem conta? <Link href="/entrar">Entrar</Link>
-      </p>
+        <p className={styles.registerLink}>
+          Já tem conta? <Link href="/entrar">Entrar</Link>
+        </p>
+      </div>
     </div>
   );
 }

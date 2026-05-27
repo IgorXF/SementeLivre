@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Sprout, BarChart2, List, Pencil, Trash2, PackageSearch } from 'lucide-react';
+import { Sprout, BarChart2, List, Pencil, Trash2, PackageSearch, ShoppingCart, ChevronRight } from 'lucide-react';
 import { useSeeds } from '@/hooks/useSeeds';
+import { useOrders } from '@/hooks/useOrders';
 import { useToast } from '@/components/feedback/Toast';
 import { Estoque, DisponibilidadeLabels, PesagemLabels, TipoMovimentacao } from '@/types/stock';
 import { Badge } from '@/components/ui/badge';
@@ -11,17 +12,22 @@ import { Button } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { Toggle } from '@/components/ui/toggle';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import Link from 'next/link';
 import styles from './semente.module.css';
 
+const pesagemOptions = Object.entries(PesagemLabels).map(([v, l]) => ({ value: v, label: l }));
+const dispOptions = Object.entries(DisponibilidadeLabels).map(([v, l]) => ({ value: v, label: l }));
+
 export default function SementeDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { getSeed, updateSeed, deleteSeed } = useSeeds();
   const { showToast } = useToast();
+  const { orders } = useOrders();
 
   const [seed, setSeed] = useState<Estoque | null>(null);
   const [loading, setLoading] = useState(true);
@@ -94,7 +100,22 @@ export default function SementeDetailPage() {
       {editing ? (
         <div className={styles.editForm}>
           <Input label="Nome popular" value={editForm.nomePopular ?? seed.nomePopular} onChange={(e) => setEditForm((p) => ({ ...p, nomePopular: e.target.value }))} required />
-          <Input label="Quantidade" type="number" value={String(editForm.quantidade ?? seed.quantidade)} onChange={(e) => setEditForm((p) => ({ ...p, quantidade: Number(e.target.value) }))} inputMode="decimal" />
+          
+          <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+            <div style={{ flex: 1 }}>
+              <Input label="Quantidade" type="number" value={String(editForm.quantidade ?? seed.quantidade)} onChange={(e) => setEditForm((p) => ({ ...p, quantidade: Number(e.target.value) }))} inputMode="decimal" />
+            </div>
+            <div style={{ flex: 1 }}>
+              <Select label="Unidade" value={editForm.tipoPesagem ?? seed.tipoPesagem} onChange={(e) => setEditForm((p) => ({ ...p, tipoPesagem: e.target.value as any }))} options={pesagemOptions} />
+            </div>
+          </div>
+          
+          <Select label="Disponibilidade" value={editForm.disponibilidade ?? seed.disponibilidade} onChange={(e) => setEditForm((p) => ({ ...p, disponibilidade: e.target.value as any }))} options={dispOptions} />
+          
+          <Input label="Preço (R$)" type="number" value={editForm.preco !== undefined ? String(editForm.preco) : String(seed.preco ?? '')} onChange={(e) => setEditForm((p) => ({ ...p, preco: e.target.value ? Number(e.target.value) : undefined }))} inputMode="decimal" step="0.01" placeholder="Opcional" />
+          
+          <Textarea label="Descrição" value={editForm.descricao ?? (seed.descricao || '')} onChange={(e) => setEditForm((p) => ({ ...p, descricao: e.target.value }))} placeholder="Opcional" />
+          
           <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
             <Button variant="ghost" onClick={() => setEditing(false)} fullWidth>Cancelar</Button>
             <Button variant="primary" onClick={handleSave} loading={saving} fullWidth>Salvar</Button>
@@ -147,6 +168,29 @@ export default function SementeDetailPage() {
               Excluir
             </Button>
           </div>
+
+          {/* Pedidos vinculados */}
+          {orders.filter(o => o.itens.some(i => i.idSemente === id)).length > 0 && (
+            <div className={styles.ordersSection}>
+              <h3 className={styles.sectionTitle}>Pedidos com este produto</h3>
+              <ul className={styles.orderList}>
+                {orders.filter(o => o.itens.some(i => i.idSemente === id)).map((order) => (
+                  <li key={order.idPedido}>
+                    <Link href={`/pedidos/${order.idPedido}`} className={styles.orderCard}>
+                      <div className={styles.orderIcon}>
+                        <ShoppingCart size={16} strokeWidth={2} />
+                      </div>
+                      <div className={styles.orderInfo}>
+                        <span className={styles.orderTo}>{order.nomeRecebedor}</span>
+                        <span className={styles.orderDate}>{order.dataPedido.toLocaleDateString()}</span>
+                      </div>
+                      <ChevronRight size={16} className={styles.chevron} />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </>
       )}
 

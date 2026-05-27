@@ -100,15 +100,15 @@ export default function NovaPropriedadePage() {
   return (
     <>
       <form onSubmit={handleSubmit} className={styles.form} noValidate>
-        <fieldset className={styles.fieldset}>
-          <legend className={styles.legend}>Dados da Propriedade</legend>
+        <section className={styles.fieldset}>
+          <h2 className={styles.legend}>Identificação da Propriedade</h2>
           <Input label="Nome da propriedade" value={form.nome} onChange={(e) => set('nome', e.target.value)} error={errors.nome} required />
           <Input label="Tamanho (hectares)" value={form.tamanhoHectares} onChange={(e) => set('tamanhoHectares', e.target.value)} type="number" inputMode="decimal" min="0" placeholder="Opcional" />
           <Select label="Comunidade" value={form.idComunidade} onChange={(e) => handleCommunityChange(e.target.value)} options={communityOptions} error={errors.idComunidade} required />
-        </fieldset>
+        </section>
 
-        <fieldset className={styles.fieldset}>
-          <legend className={styles.legend}>Endereço</legend>
+        <section className={styles.fieldset}>
+          <h2 className={styles.legend}>Endereço (Opcional)</h2>
           <Input label="CEP" value={form.cep} onChange={(e) => handleCEP(e.target.value)} inputMode="numeric" placeholder="00000-000" hint={loadingCEP ? 'Buscando CEP...' : undefined} />
           <Input label="Logradouro" value={form.logradouro} onChange={(e) => set('logradouro', e.target.value)} />
           <div className={formStyles.row}>
@@ -119,7 +119,7 @@ export default function NovaPropriedadePage() {
             <div style={{ flex: 2 }}><Input label="Município" value={form.municipio} onChange={(e) => set('municipio', e.target.value)} error={errors.municipio} required /></div>
             <div style={{ flex: 1 }}><Input label="UF" value={form.uf} onChange={(e) => set('uf', e.target.value.toUpperCase().slice(0, 2))} maxLength={2} /></div>
           </div>
-        </fieldset>
+        </section>
 
         <Button type="submit" fullWidth size="lg" loading={loading}>Cadastrar Propriedade</Button>
       </form>

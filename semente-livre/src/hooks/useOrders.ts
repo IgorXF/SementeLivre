@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { dbOnSnapshot, dbAdd, dbUpdate, dbGet } from '@/lib/db';
+import { mockPedidos } from '@/data/mockPedidos';
 import { Pedido, StatusPedido } from '@/types/order';
 import { useAuth } from '@/context/AuthContext';
 
@@ -22,7 +23,7 @@ export function useOrders() {
 
   useEffect(() => {
     if (!user) {
-      setOrders([]);
+      setOrders([...mockPedidos]);
       setLoading(false);
       return;
     }
@@ -31,11 +32,10 @@ export function useOrders() {
       'pedidos',
       (row) => row.idProprietario === user.uid,
       (rows) => {
-        const sorted = [...rows].sort(
-          (a, b) =>
-            new Date(b.dataPedido).getTime() - new Date(a.dataPedido).getTime()
+        const sorted = [...rows.map(rowToPedido), ...mockPedidos].sort(
+          (a, b) => b.dataPedido.getTime() - a.dataPedido.getTime()
         );
-        setOrders(sorted.map(rowToPedido));
+        setOrders(sorted);
         setLoading(false);
       }
     );
@@ -78,6 +78,9 @@ export function useOrders() {
   }, []);
 
   const getOrder = useCallback(async (id: string): Promise<Pedido | null> => {
+    const mock = mockPedidos.find(m => m.idPedido === id);
+    if (mock) return mock;
+    
     const row = dbGet<PedidoRow>('pedidos', id);
     if (!row) return null;
     return rowToPedido(row);

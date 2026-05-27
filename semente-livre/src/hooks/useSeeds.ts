@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { dbOnSnapshot, dbAdd, dbUpdate, dbDelete, dbGet } from '@/lib/db';
+import { mockSementes } from '@/data/mockSementes';
 import { uploadFile, getDownloadURL } from '@/lib/storage';
 import { Estoque } from '@/types/stock';
 import { useAuth } from '@/context/AuthContext';
@@ -27,7 +28,7 @@ export function useSeeds() {
 
   useEffect(() => {
     if (!user) {
-      setSeeds([]);
+      setSeeds([...mockSementes]);
       setLoading(false);
       return;
     }
@@ -36,11 +37,22 @@ export function useSeeds() {
       'estoques',
       (row) => row.idProprietario === user.uid,
       (rows) => {
-        const sorted = [...rows].sort(
-          (a, b) =>
-            new Date(b.dataMovimentacao).getTime() - new Date(a.dataMovimentacao).getTime()
+        // Remove from 'rows' any items that are actually mock items to avoid duplicates
+        const realRows = rows.filter(r => !mockSementes.some(m => m.idEstoque === r.id));
+        
+        // If a mock item was edited and saved in DB, merge its DB changes with the original mock item (which has the new photos)
+        const mergedMocks = mockSementes.map(mock => {
+          const savedInDb = rows.find(r => r.id === mock.idEstoque);
+          if (savedInDb) {
+            return { ...mock, ...rowToEstoque(savedInDb as EstoqueRow), urlFoto: mock.urlFoto };
+          }
+          return mock;
+        });
+
+        const sorted = [...realRows.map(rowToEstoque), ...mergedMocks].sort(
+          (a, b) => b.dataMovimentacao.getTime() - a.dataMovimentacao.getTime()
         );
-        setSeeds(sorted.map(rowToEstoque));
+        setSeeds(sorted);
         setLoading(false);
         setError(null);
       }
@@ -81,7 +93,14 @@ export function useSeeds() {
   );
 
   const getSeed = useCallback(async (id: string): Promise<Estoque | null> => {
+    const mock = mockSementes.find(m => m.idEstoque === id);
     const row = dbGet<EstoqueRow>('estoques', id);
+    
+    if (mock) {
+      if (row) return { ...mock, ...rowToEstoque(row), urlFoto: mock.urlFoto };
+      return mock;
+    }
+    
     if (!row) return null;
     return rowToEstoque(row);
   }, []);

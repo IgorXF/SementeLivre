@@ -20,15 +20,38 @@ export default function PedidosPage() {
   const { orders, loading } = useOrders();
   const router = useRouter();
   const [filtroStatus, setFiltroStatus] = useState('TODOS');
+  const [busca, setBusca] = useState('');
 
   const filtered = useMemo(() =>
-    orders.filter((o) => filtroStatus === 'TODOS' || o.status === filtroStatus),
-    [orders, filtroStatus]
+    orders.filter((o) => {
+      const matchStatus = filtroStatus === 'TODOS' || o.status === filtroStatus;
+      const matchBusca = busca === '' || 
+        o.idPedido.toLowerCase().includes(busca.toLowerCase()) || 
+        o.nomeRecebedor.toLowerCase().includes(busca.toLowerCase());
+      return matchStatus && matchBusca;
+    }),
+    [orders, filtroStatus, busca]
   );
 
   return (
     <div className={styles.page}>
       <div className={styles.topBar}>
+        <div className={styles.searchRow}>
+          <div className={styles.searchWrap}>
+            <Search size={15} strokeWidth={2} className={styles.searchIcon} />
+            <input
+              type="search"
+              className={styles.search}
+              placeholder="Buscar pedido por ID ou cliente..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              aria-label="Buscar pedido"
+            />
+          </div>
+          <Link href="/pedidos/novo" className={styles.addBtn} aria-label="Novo pedido">
+            <Plus size={18} strokeWidth={2.5} />
+          </Link>
+        </div>
         <div className={styles.filters} role="group" aria-label="Filtrar por status">
           {statusFilters.map((f) => (
             <button key={f.value} className={`${styles.chip} ${filtroStatus === f.value ? styles.chipActive : ''}`} onClick={() => setFiltroStatus(f.value)} aria-pressed={filtroStatus === f.value}>
@@ -36,9 +59,6 @@ export default function PedidosPage() {
             </button>
           ))}
         </div>
-        <Link href="/pedidos/novo" className={styles.addBtn} aria-label="Novo pedido">
-          <Plus size={18} strokeWidth={2.5} />
-        </Link>
       </div>
 
       {loading ? (

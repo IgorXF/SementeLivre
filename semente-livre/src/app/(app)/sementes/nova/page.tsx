@@ -10,6 +10,7 @@ import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Toggle } from '@/components/ui/toggle';
 import { Button } from '@/components/ui/button';
+import { Sprout } from 'lucide-react';
 import { TipoProduto, TipoProdutoLabels, EspecieGeral, EspecieGeralLabels, FormatoProduto } from '@/types/seed';
 import { Pesagem, PesagemLabels, DisponibilidadeProduto, DisponibilidadeLabels, TipoMovimentacao } from '@/types/stock';
 import styles from './nova.module.css';
@@ -82,10 +83,10 @@ export default function NovaSementePage() {
         dataMovimentacao: new Date(),
         dataUltimaAtualizacaoEstoque: new Date(),
       });
-      showToast('Semente cadastrada com sucesso!', 'success');
+      showToast('Produto cadastrado com sucesso!', 'success');
       router.push('/sementes');
     } catch {
-      showToast('Erro ao cadastrar semente. Tente novamente.', 'error');
+      showToast('Erro ao cadastrar produto. Tente novamente.', 'error');
     } finally {
       setLoading(false);
     }
@@ -94,21 +95,32 @@ export default function NovaSementePage() {
   const showPreco = form.disponibilidade !== DisponibilidadeProduto.INDISPONIVEL && form.disponibilidade !== DisponibilidadeProduto.PARA_DOACAO;
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form} noValidate>
+    <div className={styles.pageWrap}>
+      <div className={styles.pageHeader}>
+        <div className={styles.headerIconWrap}>
+          <Sprout size={28} strokeWidth={2} />
+        </div>
+        <div>
+          <h1 className={styles.pageTitle}>Novo Produto</h1>
+          <p className={styles.pageSubtitle}>Adicione um novo item ao seu estoque</p>
+        </div>
+      </div>
 
-      {/* Foto */}
-      <fieldset className={styles.fieldset}>
-        <legend className={styles.legend}>Foto da Semente</legend>
+      <form onSubmit={handleSubmit} className={styles.form} noValidate>
+
+        {/* Foto */}
+      <section className={styles.fieldset}>
+        <h2 className={styles.legend}>Foto do Produto</h2>
         <div
           className={styles.photoArea}
           onClick={() => fileRef.current?.click()}
           role="button"
           tabIndex={0}
-          aria-label="Selecionar foto da semente"
+          aria-label="Selecionar foto do produto"
           onKeyDown={(e) => e.key === 'Enter' && fileRef.current?.click()}
         >
           {fotoPreview ? (
-            <img src={fotoPreview} alt="Preview da semente" className={styles.photoPreview} />
+            <img src={fotoPreview} alt="Preview do produto" className={styles.photoPreview} />
           ) : (
             <div className={styles.photoPlaceholder}>
               <span aria-hidden="true">📷</span>
@@ -123,29 +135,31 @@ export default function NovaSementePage() {
             Remover foto
           </Button>
         )}
-      </fieldset>
+      </section>
 
       {/* Identificação */}
-      <fieldset className={styles.fieldset}>
-        <legend className={styles.legend}>Identificação</legend>
+      <section className={styles.fieldset}>
+        <h2 className={styles.legend}>Identificação</h2>
         <Input label="Nome popular" value={form.nomePopular} onChange={(e) => set('nomePopular', e.target.value)} error={errors.nomePopular} required />
         <Input label="Nome científico" value={form.nomeCientifico} onChange={(e) => set('nomeCientifico', e.target.value)} placeholder="Opcional" />
-        <Textarea label="Histórico / Descrição" value={form.historico} onChange={(e) => set('historico', e.target.value)} placeholder="Conte um pouco sobre esta semente..." />
-      </fieldset>
+        <Textarea label="Histórico / Descrição" value={form.historico} onChange={(e) => set('historico', e.target.value)} placeholder="Conte um pouco sobre este produto..." />
+      </section>
 
       {/* Classificação */}
-      <fieldset className={styles.fieldset}>
-        <legend className={styles.legend}>Classificação</legend>
+      <section className={styles.fieldset}>
+        <h2 className={styles.legend}>Classificação</h2>
         <Select label="Tipo" value={form.tipo} onChange={(e) => set('tipo', e.target.value)} options={tipoOptions} required />
         <Select label="Espécie" value={form.especie} onChange={(e) => set('especie', e.target.value)} options={especieOptions} required />
         <Toggle label="Formato" options={formatoOptions} value={form.formato} onChange={(v) => set('formato', v)} />
-      </fieldset>
+      </section>
 
       {/* Estoque */}
-      <fieldset className={styles.fieldset}>
-        <legend className={styles.legend}>Estoque Inicial</legend>
+      <section className={styles.fieldset}>
+        <h2 className={styles.legend}>Estoque Inicial</h2>
         <div className={styles.row}>
-          <Input label="Quantidade" value={form.quantidade} onChange={(e) => set('quantidade', e.target.value)} error={errors.quantidade} type="number" inputMode="decimal" min="0" required style={{ flex: 2 }} />
+          <div style={{ flex: 1 }}>
+            <Input label="Quantidade" value={form.quantidade} onChange={(e) => set('quantidade', e.target.value)} error={errors.quantidade} type="number" inputMode="decimal" min="0" required />
+          </div>
           <div style={{ flex: 1 }}>
             <Select label="Unidade" value={form.tipoPesagem} onChange={(e) => set('tipoPesagem', e.target.value)} options={pesagemOptions} required />
           </div>
@@ -158,13 +172,14 @@ export default function NovaSementePage() {
           </>
         )}
         <Textarea label="Observações" value={form.descricao} onChange={(e) => set('descricao', e.target.value)} placeholder="Informações adicionais..." />
-      </fieldset>
+      </section>
 
       <div className={styles.submitBar}>
-        <Button type="submit" fullWidth size="lg" loading={loading}>
-          Cadastrar Semente
+        <Button type="submit" fullWidth size="lg" loading={loading} className={styles.submitBtn}>
+          Cadastrar Produto
         </Button>
       </div>
     </form>
+    </div>
   );
 }

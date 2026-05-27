@@ -7,7 +7,9 @@ import { Leaf, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { signInAndNotify } from '@/lib/auth';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { AnimatedSeedsSVG } from '@/components/icons/AnimatedSeedsSVG';
 import styles from './entrar.module.css';
+import authStyles from '../auth.module.css';
 
 export default function EntrarPage() {
   const router = useRouter();
@@ -40,61 +42,69 @@ export default function EntrarPage() {
   };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.logo}>
-        <div className={styles.logoIcon} aria-hidden="true">
-          <Leaf size={28} strokeWidth={2} />
+    <div className={authStyles.container}>
+      <div className={authStyles.hero}>
+        <div className={`${authStyles.blob} ${authStyles.blob1}`}></div>
+        <div className={`${authStyles.blob} ${authStyles.blob2}`}></div>
+        
+        <div className={authStyles.heroHeader}>
+          <h1 className={authStyles.heroTitle}>Semente Livre</h1>
+          <p className={authStyles.heroSub}>IF Sudeste MG</p>
         </div>
-        <h1 className={styles.logoText}>Semente Livre</h1>
-        <p className={styles.logoSub}>IF Sudeste MG</p>
+
+        <div className={authStyles.svgWrapper}>
+          <AnimatedSeedsSVG />
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className={styles.form} noValidate>
-        <h2 className={styles.title}>Entrar na conta</h2>
+      <div className={authStyles.formContainer}>
+        <form onSubmit={handleSubmit} className={styles.form} noValidate>
+          <h2 className={styles.title}>Entrar na conta</h2>
 
-        {error && (
-          <div className={styles.errorBox} role="alert" aria-live="assertive">
-            <AlertCircle size={15} strokeWidth={2.5} />
-            {error}
-          </div>
-        )}
+          {error && (
+            <div className={styles.errorBox} role="alert" aria-live="assertive">
+              <AlertCircle size={15} strokeWidth={2.5} />
+              {error}
+            </div>
+          )}
 
-        <Input
-          label="E-mail"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete="email"
-          inputMode="email"
-          required
-          placeholder="seu@email.com"
-        />
+          <Input
+            label="E-mail"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            inputMode="email"
+            required
+            placeholder="seu@email.com"
+          />
 
-        <Input
-          label="Senha"
-          type={showSenha ? 'text' : 'password'}
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          autoComplete="current-password"
-          required
-          placeholder="Sua senha"
-          rightIcon={showSenha ? <EyeOff size={17} strokeWidth={2} /> : <Eye size={17} strokeWidth={2} />}
-          onRightIconClick={() => setShowSenha(!showSenha)}
-        />
+          <Input
+            label="Senha"
+            type={showSenha ? 'text' : 'password'}
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            autoComplete="current-password"
+            required
+            placeholder="Sua senha"
+            rightIcon={showSenha ? <EyeOff size={17} strokeWidth={2} /> : <Eye size={17} strokeWidth={2} />}
+            onRightIconClick={() => setShowSenha(!showSenha)}
+          />
 
-        <Link href="/recuperar-senha" className={styles.forgotLink}>
-          Esqueceu sua senha?
-        </Link>
+          <Link href="/recuperar-senha" className={styles.forgotLink}>
+            Esqueceu sua senha?
+          </Link>
 
-        <Button type="submit" fullWidth loading={loading} size="lg">
-          Entrar
-        </Button>
-      </form>
+          <Button type="submit" fullWidth loading={loading} size="lg">
+            Entrar
+          </Button>
+        </form>
 
-      <p className={styles.registerLink}>
-        Ainda não tem conta?{' '}
-        <Link href="/cadastrar">Cadastre-se</Link>
-      </p>
+        <p className={styles.registerLink}>
+          Ainda não tem conta?{' '}
+          <Link href="/cadastrar">Cadastre-se</Link>
+        </p>
+      </div>
     </div>
   );
 }

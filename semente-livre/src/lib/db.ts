@@ -104,3 +104,5 @@ export function dbOnSnapshotAll<T extends { id: string }>(
   const interval = setInterval(() => callback(dbGetAll<T>(table)), 500);
   return () => clearInterval(interval);
 }
+
+
