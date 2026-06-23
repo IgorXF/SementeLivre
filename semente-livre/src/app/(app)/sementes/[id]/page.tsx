@@ -197,11 +197,11 @@ export default function SementeDetailPage() {
       {/* Ajuste dialog */}
       <Dialog isOpen={showAjuste} onClose={() => setShowAjuste(false)} title="Ajustar Estoque">
         <p className={styles.dialogInfo}>Estoque atual: <strong>{seed.quantidade} {PesagemLabels[seed.tipoPesagem]}</strong></p>
-        <Toggle options={[{ value: 'Adicionar', label: 'Adicionar' }, { value: 'Subtrair', label: 'Subtrair' }]} value={ajusteDir} onChange={(v) => setAjusteDir(v as 'Adicionar' | 'Subtrair')} />
+        <Toggle options={[{ value: 'Adicionar', label: 'Adicionar' }, { value: 'Subtrair', label: 'Subtrair', variant: 'danger' }]} value={ajusteDir} onChange={(v) => setAjusteDir(v as 'Adicionar' | 'Subtrair')} />
         <Input label="Quantidade" value={ajusteQty} onChange={(e) => setAjusteQty(e.target.value)} type="number" inputMode="decimal" min="0" />
         <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-4)' }}>
           <Button variant="ghost" onClick={() => setShowAjuste(false)} fullWidth>Cancelar</Button>
-          <Button variant="primary" onClick={handleAjuste} loading={saving} fullWidth>Confirmar</Button>
+          <Button variant={ajusteDir === 'Subtrair' ? 'danger' : 'primary'} onClick={handleAjuste} loading={saving} fullWidth>Confirmar</Button>
         </div>
       </Dialog>
 

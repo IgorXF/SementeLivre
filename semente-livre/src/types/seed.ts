@@ -4,6 +4,8 @@ export enum TipoProduto {
   FORRAGEIRA = 'FORRAGEIRA',
   CEREAL = 'CEREAL',
   LEGUMINOSA = 'LEGUMINOSA',
+  VERDURA = 'VERDURA',
+  MEDICINAL = 'MEDICINAL',
   OUTRAS = 'OUTRAS',
 }
 
@@ -13,6 +15,8 @@ export const TipoProdutoLabels: Record<TipoProduto, string> = {
   [TipoProduto.FORRAGEIRA]: 'Forrageira',
   [TipoProduto.CEREAL]: 'Cereal',
   [TipoProduto.LEGUMINOSA]: 'Leguminosa',
+  [TipoProduto.VERDURA]: 'Verdura',
+  [TipoProduto.MEDICINAL]: 'Medicinal',
   [TipoProduto.OUTRAS]: 'Outras',
 };
 

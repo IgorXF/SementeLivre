@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import styles from './toggle.module.css';
 
 interface ToggleProps {
-  options: { value: string; label: string }[];
+  options: { value: string; label: string; variant?: 'primary' | 'danger' }[];
   value: string;
   onChange: (value: string) => void;
   label?: string;
@@ -22,7 +22,11 @@ export function Toggle({ options, value, onChange, label }: ToggleProps) {
             type="button"
             role="radio"
             aria-checked={value === opt.value}
-            className={clsx(styles.option, value === opt.value && styles.active)}
+            className={clsx(
+              styles.option,
+              value === opt.value && styles.active,
+              value === opt.value && opt.variant === 'danger' && styles.activeDanger
+            )}
             onClick={() => onChange(opt.value)}
           >
             {opt.label}

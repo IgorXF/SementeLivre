@@ -18,6 +18,7 @@ export enum DisponibilidadeProduto {
   PARA_TROCA = 'PARA_TROCA',
   PARA_VENDA = 'PARA_VENDA',
   PARA_DOACAO = 'PARA_DOACAO',
+  A_NEGOCIAR = 'A_NEGOCIAR',
   INDISPONIVEL = 'INDISPONIVEL',
 }
 
@@ -25,6 +26,7 @@ export const DisponibilidadeLabels: Record<DisponibilidadeProduto, string> = {
   [DisponibilidadeProduto.PARA_TROCA]: 'Para Troca',
   [DisponibilidadeProduto.PARA_VENDA]: 'Para Venda',
   [DisponibilidadeProduto.PARA_DOACAO]: 'Para Doação',
+  [DisponibilidadeProduto.A_NEGOCIAR]: 'A Negociar',
   [DisponibilidadeProduto.INDISPONIVEL]: 'Indisponível',
 };
 

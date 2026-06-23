@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { ZoomControl } from '@/components/shared/ZoomControl';
 
 export const metadata: Metadata = {
   title: 'Semente Livre',
@@ -15,7 +16,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
   themeColor: '#2f9e41',
 };
 
@@ -30,7 +30,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ZoomControl />
+      </body>
     </html>
   );
 }

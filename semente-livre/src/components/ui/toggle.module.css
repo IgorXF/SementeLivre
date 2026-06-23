@@ -43,3 +43,7 @@
   color: var(--color-white);
   box-shadow: var(--shadow-sm);
 }
+
+.activeDanger {
+  background-color: var(--color-danger);
+}
