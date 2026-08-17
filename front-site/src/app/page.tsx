@@ -1,0 +1,403 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import PublicHeader from "@/components/public-header";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Loader2,
+  Search,
+  Leaf,
+  FlaskConical,
+  BookOpen,
+  Sprout,
+  ArrowRight,
+  MessageCircle,
+} from "lucide-react";
+import type { Species, SpeciesStatus, Comunidade, TipoSemente } from "@/lib/types";
+
+// ── Status config ─────────────────────────────────────────────────────────────
+const STATUS_CONFIG: Record<
+  SpeciesStatus,
+  { label: string; className: string; show: boolean }
+> = {
+  exchange: {
+    label: "Para Troca",
+    className: "bg-blue-100 text-blue-700 border-blue-200",
+    show: true,
+  },
+  sale: {
+    label: "Para Venda",
+    className: "bg-green-100 text-green-700 border-green-200",
+    show: true,
+  },
+  donation: {
+    label: "Para Doação",
+    className: "bg-purple-100 text-purple-700 border-purple-200",
+    show: true,
+  },
+  unavailable: {
+    label: "Indisponível",
+    className: "bg-gray-100 text-gray-400 border-gray-200",
+    show: true,
+  },
+};
+
+const TIPO_CONFIG: Record<TipoSemente, string> = {
+  HORTALICA: "Hortaliça",
+  FRUTIFERA: "Frutífera",
+  FORRAGEIRA: "Forrageira",
+  CEREAL: "Cereal",
+  LEGUMINOSA: "Leguminosa",
+  OUTRAS: "Outras",
+};
+
+type FilterStatus = SpeciesStatus | "all";
+type FilterTipo = TipoSemente | "all";
+
+export default function MarketplacePage() {
+  const router = useRouter();
+  const [species, setSpecies] = useState<Species[]>([]);
+  const [comunidades, setComunidades] = useState<Comunidade[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<FilterStatus>("all");
+  const [filterTipo, setFilterTipo] = useState<FilterTipo>("all");
+  const [filterComunidade, setFilterComunidade] = useState("all");
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/catalog").then((r) => r.json()),
+      fetch("/api/comunidades").then((r) => r.json()),
+    ])
+      .then(([sp, cm]: [Species[], Comunidade[]]) => {
+        setSpecies(sp);
+        setComunidades(cm);
+      })
+      .catch(() => toast.error("Erro ao carregar sementes."))
+      .finally(() => setLoading(false));
+  }, []);
+
+  function getNomeComunidade(id?: string) {
+    return comunidades.find((c) => c.id_comunidade === id)?.nome ?? null;
+  }
+
+  const filtered = species.filter((s) => {
+    const matchSearch = s.nome_popular
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    const matchFilter = filter === "all" || s.status === filter;
+    const matchTipo = filterTipo === "all" || s.tipoSemente === filterTipo;
+    const matchComunidade =
+      filterComunidade === "all" || s.id_comunidade === filterComunidade;
+    return matchSearch && matchFilter && matchTipo && matchComunidade;
+  });
+
+  const stats = {
+    total: species.length,
+    sale: species.filter((s) => s.status === "sale").length,
+    exchange: species.filter((s) => s.status === "exchange").length,
+    donation: species.filter((s) => s.status === "donation").length,
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <PublicHeader />
+
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-green-600 via-green-500 to-green-400 text-white">
+        {/* Blobs */}
+        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-white/10" />
+        <div className="absolute -bottom-24 -left-16 w-80 h-80 rounded-full bg-green-700/30" />
+
+        <div className="relative max-w-7xl mx-auto px-6 py-20 flex flex-col items-center text-center gap-6">
+          <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <Sprout className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight max-w-2xl leading-tight">
+            Banco Comunitário de Sementes
+          </h1>
+          <p className="text-green-100 text-lg max-w-xl leading-relaxed">
+            Variedades crioulas e orgânicas cultivadas por{" "}
+            <strong className="text-white">comunidades quilombolas</strong>.
+            Preservando a biodiversidade, cultivando o futuro.
+          </p>
+
+          {/* Stats row */}
+          <div className="flex gap-4 flex-wrap justify-center mt-2">
+            <StatPill value={stats.total} label="Espécies" />
+            <StatPill value={stats.sale} label="À Venda" />
+            <StatPill value={stats.exchange} label="Para Troca" />
+            <StatPill value={stats.donation} label="Para Doação" />
+          </div>
+
+          <Button
+            size="lg"
+            className="bg-white text-green-700 hover:bg-green-50 font-semibold gap-2 mt-2 shadow-lg"
+            onClick={() =>
+              document
+                .getElementById("sementes")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            Ver sementes disponíveis
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
+      </section>
+
+      {/* ── Seed catalog ── */}
+      <section
+        id="sementes"
+        className="flex-1 max-w-7xl mx-auto w-full px-6 py-14"
+      >
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">
+            Sementes Disponíveis
+          </h2>
+          <p className="text-gray-500 text-sm">
+            {filtered.length} resultado{filtered.length !== 1 ? "s" : ""}
+          </p>
+        </div>
+
+        {/* Search + filters */}
+        <div className="flex flex-col gap-3 mb-8">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                placeholder="Buscar por nome popular..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 border-green-200 focus-visible:ring-green-400"
+              />
+            </div>
+
+            <select
+              value={filterComunidade}
+              onChange={(e) => setFilterComunidade(e.target.value)}
+              className="rounded-md border border-green-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+            >
+              <option value="all">Todas as comunidades</option>
+              {comunidades.map((c) => (
+                <option key={c.id_comunidade} value={c.id_comunidade}>
+                  {c.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Status pills */}
+          <div className="flex gap-2 flex-wrap">
+            {(
+              [
+                "all",
+                "sale",
+                "exchange",
+                "donation",
+                "unavailable",
+              ] as FilterStatus[]
+            ).map((f) => {
+              const label =
+                f === "all"
+                  ? "Todos"
+                  : STATUS_CONFIG[f as SpeciesStatus].label;
+              return (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                    filter === f
+                      ? "bg-green-600 text-white border-green-600 shadow-sm"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-green-300 hover:text-green-700"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Tipo pills */}
+          <div className="flex gap-2 flex-wrap">
+            {(["all", ...Object.keys(TIPO_CONFIG)] as FilterTipo[]).map((t) => {
+              const label = t === "all" ? "Todos os tipos" : TIPO_CONFIG[t as TipoSemente];
+              return (
+                <button
+                  key={t}
+                  onClick={() => setFilterTipo(t)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                    filterTipo === t
+                      ? "bg-green-700 text-white border-green-700 shadow-sm"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-green-300 hover:text-green-700"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Loading */}
+        {loading && (
+          <div className="flex justify-center py-20">
+            <Loader2 className="w-8 h-8 text-green-600 animate-spin" />
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && filtered.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-52 bg-white rounded-2xl border border-dashed border-green-200 gap-3">
+            <Leaf className="w-10 h-10 text-green-200" />
+            <p className="text-gray-500 text-sm">
+              {search
+                ? `Nenhuma semente encontrada para "${search}".`
+                : "Nenhuma semente no catálogo ainda."}
+            </p>
+          </div>
+        )}
+
+        {/* Grid */}
+        {!loading && filtered.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {filtered.map((sp) => {
+              const cfg = STATUS_CONFIG[sp.status];
+              const unavailable = sp.status === "unavailable";
+
+              return (
+                <Card
+                  key={sp.id_especie}
+                  className={`group flex flex-col border-green-100 bg-white hover:shadow-lg transition-all ${
+                    unavailable ? "opacity-60" : ""
+                  }`}
+                >
+                  {/* Photo */}
+                  <div className="h-40 rounded-t-xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center overflow-hidden">
+                    {sp.foto ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={sp.foto}
+                        alt={sp.nome_popular}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <Leaf className="w-14 h-14 text-green-300" />
+                    )}
+                  </div>
+
+                  <CardHeader className="pb-1 pt-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <CardTitle className="text-sm leading-tight">
+                        {sp.nome_popular}
+                      </CardTitle>
+                      <Badge
+                        variant="outline"
+                        className={`text-[11px] font-medium flex-shrink-0 ${cfg.className}`}
+                      >
+                        {cfg.label}
+                      </Badge>
+                    </div>
+                    {getNomeComunidade(sp.id_comunidade) && (
+                      <p className="text-[11px] text-green-600 font-medium mt-1">
+                        🌿 {getNomeComunidade(sp.id_comunidade)}
+                      </p>
+                    )}
+                  </CardHeader>
+
+                  <CardContent className="pb-4 space-y-1.5 flex-1 flex flex-col justify-between">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                        <FlaskConical className="w-3 h-3" />
+                        <span className="italic">
+                          {sp.nome_cientifico || "—"}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                        <BookOpen className="w-3 h-3" />
+                        <span>{sp.familia_botanica || "—"}</span>
+                      </div>
+                      {sp.quantidadeEstoque != null && (
+                        <p className="text-xs text-gray-600 font-medium">
+                          📦 {sp.quantidadeEstoque}{" "}
+                          {sp.unidadePesagem ?? "unid."} em estoque
+                        </p>
+                      )}
+                      {sp.preco != null && (
+                        <p className="text-xs text-green-700 font-semibold">
+                          R$ {sp.preco.toFixed(2)}/{sp.unidadePesagem ?? "unid."}
+                        </p>
+                      )}
+                      {sp.descricao && (
+                        <p className="text-xs text-gray-500 leading-relaxed line-clamp-3 pt-1">
+                          {sp.descricao}
+                        </p>
+                      )}
+                    </div>
+
+                    {!unavailable && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="mt-3 w-full border-green-200 text-green-700 hover:bg-green-50 gap-1.5 text-xs h-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => router.push(`/produto/${sp.id_especie}`)}
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        Quero negociar
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* ── About section ── */}
+      <section
+        id="sobre"
+        className="bg-green-700 text-white py-16 px-6"
+      >
+        <div className="max-w-3xl mx-auto text-center space-y-5">
+          <div className="text-5xl">🌿</div>
+          <h2 className="text-3xl font-bold">Rede de Quilombos</h2>
+          <p className="text-green-100 text-base leading-relaxed">
+            Comunidades quilombolas unidas pela preservação das sementes crioulas
+            e pelo fortalecimento da agricultura familiar. Nosso banco comunitário
+            de sementes reúne variedades cultivadas há gerações, adaptadas ao
+            nosso clima e nossa cultura.
+          </p>
+          <p className="text-green-200 text-sm">
+            Para negociações e parcerias, entre em contato diretamente com
+            nossos produtores.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer className="bg-green-900 text-green-300 text-xs py-5 text-center">
+        © {new Date().getFullYear()} Semente Livre. Todos os direitos reservados.
+      </footer>
+    </div>
+  );
+}
+
+function StatPill({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm">
+      <span className="font-bold text-white">{value}</span>
+      <span className="text-green-100">{label}</span>
+    </div>
+  );
+}
+
