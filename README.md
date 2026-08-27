@@ -190,10 +190,10 @@ git push origin --delete dev1
 | Dev 2 | [@victorlak](https://github.com/victorlak)  | Desenvolvimento |
 | Dev 3 | [@IgorXF](https://github.com/IgorXF)  | Desenvolvimento |
 | Dev 4 | [@PhenriqET](https://github.com/PhenriqET)  | Desenvolvimento |
-| Dev 5 | [@ThalesTHM](https://github.com/ThalesTHM)  | Desenvolvimento |
+| Dev 5 | [@wes23dev](https://github.com/wes23dev)  | Desenvolvimento |
 | Dev 6 | [@joaocarlosms](https://github.com/joaocarlosms)  | Desenvolvimento |
 | Dev 7 | [@WlBrito](https://github.com/WlBrito)  | Desenvolvimento |
-| Dev 8 | [@ThalesTHM](https://github.com/ThalesTHM)  | Desenvolvimento |
+| Dev 8 | [@otFaria](https://github.com/otFaria)  | Desenvolvimento |
 
 > Preencher os usernames do GitHub de cada dev conforme forem sendo mapeados.
 
