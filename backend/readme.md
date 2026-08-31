@@ -99,3 +99,67 @@ backend/
 ├── pom.xml                      # Dependências do projeto
 └── README.md                    # Documentação do projeto
 ```
+
+## 10. Arquitetura de Pacotes (Backend)
+Todo o código-fonte fica sob o pacote base `com.sementelivre.backend` (sempre em
+minúsculo, seguindo a convenção Java). Cada camada tem uma responsabilidade única
+e um `package-info.java` documentando seu propósito.
+
+```text
+com.sementelivre.backend
+├── config/         # Beans do Spring, CORS, OpenAPI/Swagger (@Configuration)
+├── controller/     # Endpoints REST (@RestController). Sem regra de negócio
+├── dto/            # Objetos de transferência (entrada/saída da API)
+├── entity/         # Entidades JPA (@Entity)
+│   └── enums/      # Enums de domínio (ex: StatusComunidade)
+├── exception/      # Exceções de negócio + GlobalExceptionHandler
+├── repository/     # Acesso a dados (Spring Data JPA)
+├── security/       # Autenticação, autorização, filtros e encoder de senha
+├── service/        # Regra de negócio (@Service)
+└── util/           # Utilitários transversais sem estado
+```
+
+### Convenções de nomenclatura
+Aplicadas de forma idêntica em todos os domínios:
+
+| Camada        | Sufixo / padrão                    | Exemplo                        |
+|---------------|------------------------------------|--------------------------------|
+| Entidade      | Nome do domínio (singular)         | `Comunidade`                   |
+| Tabela        | `snake_case` + sufixo `_t`         | `comunidade_t`                 |
+| DTO           | `<Dominio>DTO`                     | `ComunidadeDTO`                |
+| DTO entrada   | `<Dominio>RequestDTO`              | `UsuarioRequestDTO`            |
+| DTO saída     | `<Dominio>ResponseDTO`            | `UsuarioResponseDTO`           |
+| Repository    | `<Dominio>Repository`              | `ComunidadeRepository`         |
+| Service       | `<Dominio>Service`                 | `ComunidadeService`            |
+| Controller    | `<Dominio>Controller`              | `ComunidadeController`         |
+| Enum          | Nome descritivo (em `entity.enums`)| `StatusComunidade`             |
+| Exceção       | `<Motivo>Exception`                | `ResourceNotFoundException`    |
+
+- Pacotes: sempre minúsculo (`com.sementelivre.backend`).
+- Classes: `PascalCase`. Métodos e atributos: `camelCase`.
+- Endpoints REST: substantivo no plural (`/comunidades`, `/propriedades`).
+
+### Interfaces base para CRUD
+Para manter os domínios uniformes, existem dois contratos base:
+
+- **`repository.BaseRepository<T, ID>`** — estende `JpaRepository` e é anotado com
+  `@NoRepositoryBean`. Os repositórios concretos estendem esta interface em vez de
+  `JpaRepository` diretamente, centralizando futuros métodos comuns.
+
+  ```java
+  public interface ComunidadeRepository extends BaseRepository<Comunidade, UUID> { }
+  ```
+
+- **`service.CrudService<REQ, RES, ID>`** — contrato comum das operações de CRUD,
+  separando o DTO de entrada (`REQ`) do DTO de saída (`RES`).
+
+  ```java
+  @Service
+  public class ComunidadeService
+          implements CrudService<ComunidadeDTO, ComunidadeDTO, UUID> {
+      // criar, buscarPorId, listar, atualizar, deletar
+  }
+  ```
+
+> Não há um controller base: os `@RestController` variam demais em rotas, códigos
+> de status e documentação OpenAPI para uma superclasse comum agregar valor.

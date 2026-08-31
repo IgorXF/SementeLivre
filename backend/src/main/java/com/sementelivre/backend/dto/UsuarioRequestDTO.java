@@ -1,4 +1,4 @@
-package com.sementeLivre.backend.dto;
+package com.sementelivre.backend.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
