@@ -1,4 +1,4 @@
-package com.sementeLivre.backend.exception;
+package com.sementelivre.backend.exception;
 
 public class ResourceNotFoundException extends RuntimeException{
     

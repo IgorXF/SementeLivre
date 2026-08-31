@@ -1,4 +1,4 @@
-package com.sementeLivre.backend.dto;
+package com.sementelivre.backend.dto;
 
 import java.util.UUID;
 

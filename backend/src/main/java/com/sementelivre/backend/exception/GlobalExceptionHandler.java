@@ -1,4 +1,4 @@
-package com.sementeLivre.backend.exception;
+package com.sementelivre.backend.exception;
 
 import java.time.Instant;
 import java.util.ArrayList;
