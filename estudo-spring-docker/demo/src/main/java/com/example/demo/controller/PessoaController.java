@@ -9,6 +9,10 @@ import com.example.demo.model.Pessoa;
 import com.example.demo.model.Proprietario;
 import com.example.demo.model.Usuario;
 import com.example.demo.service.PessoaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/pessoas")
+@Tag(name = "Pessoas", description = "Cadastro e consulta de pessoas (usuários, proprietários e admins)")
 public class PessoaController {
 
     private final PessoaService pessoaService;
@@ -28,6 +33,13 @@ public class PessoaController {
     }
 
     @GetMapping
+    @Operation(
+            summary = "Listar todas as pessoas",
+            description = "Retorna uma lista de todas as pessoas cadastradas no sistema."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso")
+    })
     public ResponseEntity<List<PessoaResponseDTO>> listar() {
         List<PessoaResponseDTO> pessoas = pessoaService.listarTodas().stream()
                 .map(this::mapToResponse)
@@ -36,6 +48,14 @@ public class PessoaController {
     }
 
     @GetMapping("/{id}")
+    @Operation(
+            summary = "Buscar pessoa por ID",
+            description = "Retorna os dados de uma pessoa cadastrada a partir do identificador (UUID)."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pessoa encontrada"),
+            @ApiResponse(responseCode = "404", description = "Pessoa não encontrada")
+    })
     public ResponseEntity<PessoaResponseDTO> buscarPorId(@PathVariable UUID id) {
         Pessoa pessoa = pessoaService.buscarPorId(id);
         return ResponseEntity.ok(mapToResponse(pessoa));
