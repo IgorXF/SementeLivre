@@ -1,8 +1,10 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.LogradouroDTO;
 import com.example.demo.dto.UsuarioCreateRequestDTO;
 import com.example.demo.exception.DocumentoJaCadastradoException;
 import com.example.demo.exception.EmailJaCadastradoException;
+import com.example.demo.model.Logradouro;
 import com.example.demo.model.TipoDocumento;
 import com.example.demo.model.Usuario;
 import com.example.demo.repository.LogradouroRepository;
@@ -89,5 +91,34 @@ public class UsuarioServiceTest {
 
         verify(passwordEncoder).encode(dto.getSenha());
         assertThat(usuario.getSenhaHash()).isEqualTo("hash-bcrypt-simulado");
+        // Reforço de legibilidade: deixa explícito que a senha em texto puro nunca é persistida.
+        assertThat(usuario.getSenhaHash()).isNotEqualTo(dto.getSenha());
+    }
+
+    @Test
+    public void deveCriarUsuarioComSucessoComTodosOsCampos() {
+        UsuarioCreateRequestDTO dto = dtoValido();
+        dto.setTelefone("(32) 99999-0000");
+        LogradouroDTO endereco = new LogradouroDTO();
+        endereco.setLogradouro("Rua A");
+        endereco.setMunicipio("Cidade");
+        endereco.setUf("MG");
+        dto.setEndereco(endereco);
+
+        when(pessoaRepository.existsByEmail(dto.getEmail())).thenReturn(false);
+        when(pessoaRepository.existsByDocumento(dto.getDocumento())).thenReturn(false);
+        when(passwordEncoder.encode(dto.getSenha())).thenReturn("hash-bcrypt-simulado");
+        when(usuarioRepository.save(any(Usuario.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Usuario usuario = usuarioService.criar(dto);
+
+        assertThat(usuario.getNome()).isEqualTo(dto.getNome());
+        assertThat(usuario.getTipoDocumento()).isEqualTo(TipoDocumento.CPF);
+        assertThat(usuario.getDocumento()).isEqualTo(dto.getDocumento());
+        assertThat(usuario.getTelefone()).isEqualTo(dto.getTelefone());
+        assertThat(usuario.getEmail()).isEqualTo(dto.getEmail());
+        assertThat(usuario.getLogradouro()).isNotNull();
+        assertThat(usuario.getLogradouro().getLogradouro()).isEqualTo("Rua A");
+        verify(logradouroRepository).save(any(Logradouro.class));
     }
 }
