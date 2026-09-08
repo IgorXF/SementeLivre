@@ -3,12 +3,13 @@ package com.example.demo.service;
 import com.example.demo.dto.ProprietarioCreateRequestDTO;
 import com.example.demo.exception.DocumentoJaCadastradoException;
 import com.example.demo.exception.EmailJaCadastradoException;
+import com.example.demo.exception.RgJaCadastradoException;
 import com.example.demo.model.Logradouro;
 import com.example.demo.model.Proprietario;
 import com.example.demo.repository.LogradouroRepository;
 import com.example.demo.repository.PessoaRepository;
 import com.example.demo.repository.ProprietarioRepository;
-import org.springframework.dao.DataIntegrityViolationException;
+import com.example.demo.validation.DocumentoValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,8 @@ public class ProprietarioService {
 
     @Transactional
     public Proprietario criar(ProprietarioCreateRequestDTO dto) {
+        DocumentoValidator.validar(dto.getTipoDocumento(), dto.getDocumento());
+
         if (pessoaRepository.existsByEmail(dto.getEmail())) {
             throw new EmailJaCadastradoException("E-mail já cadastrado no sistema.");
         }
@@ -40,14 +43,7 @@ public class ProprietarioService {
         }
 
         if (proprietarioRepository.existsByRg(dto.getRg())) {
-            throw new DataIntegrityViolationException("RG já cadastrado no sistema.");
-        }
-
-        if (dto.getTipoDocumento().name().equals("CPF") && dto.getDocumento().length() != 11) {
-            throw new IllegalArgumentException("CPF deve conter exatamente 11 dígitos");
-        }
-        if (dto.getTipoDocumento().name().equals("CNPJ") && dto.getDocumento().length() != 14) {
-            throw new IllegalArgumentException("CNPJ deve conter exatamente 14 dígitos");
+            throw new RgJaCadastradoException("RG já cadastrado no sistema.");
         }
 
         Proprietario proprietario = new Proprietario();

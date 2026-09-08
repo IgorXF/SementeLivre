@@ -8,6 +8,7 @@ import com.example.demo.model.Usuario;
 import com.example.demo.repository.LogradouroRepository;
 import com.example.demo.repository.PessoaRepository;
 import com.example.demo.repository.UsuarioRepository;
+import com.example.demo.validation.DocumentoValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,19 +31,14 @@ public class UsuarioService {
 
     @Transactional
     public Usuario criar(UsuarioCreateRequestDTO dto) {
+        DocumentoValidator.validar(dto.getTipoDocumento(), dto.getDocumento());
+
         if (pessoaRepository.existsByEmail(dto.getEmail())) {
             throw new EmailJaCadastradoException("E-mail já cadastrado no sistema.");
         }
 
         if (pessoaRepository.existsByDocumento(dto.getDocumento())) {
             throw new DocumentoJaCadastradoException("Documento já cadastrado no sistema.");
-        }
-
-        if (dto.getTipoDocumento().name().equals("CPF") && dto.getDocumento().length() != 11) {
-            throw new IllegalArgumentException("CPF deve conter exatamente 11 dígitos");
-        }
-        if (dto.getTipoDocumento().name().equals("CNPJ") && dto.getDocumento().length() != 14) {
-            throw new IllegalArgumentException("CNPJ deve conter exatamente 14 dígitos");
         }
 
         Usuario usuario = new Usuario();

@@ -1,6 +1,7 @@
 package com.example.demo.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,20 +12,62 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({EmailJaCadastradoException.class, DocumentoJaCadastradoException.class})
+    private static final Map<String, String> MENSAGENS_POR_CONSTRAINT = Map.of(
+            "uk_pessoa_email", "E-mail já cadastrado no sistema.",
+            "uk_pessoa_documento", "Documento já cadastrado no sistema.",
+            "uk_proprietario_rg", "RG já cadastrado no sistema."
+    );
+
+    private static final String MENSAGEM_GENERICA_INTEGRIDADE =
+            "Violação de integridade de dados (ex: registro já existe ou possui dependências).";
+
+    @ExceptionHandler({EmailJaCadastradoException.class, DocumentoJaCadastradoException.class, RgJaCadastradoException.class})
     public ResponseEntity<ErrorResponse> handleConflictExceptions(RuntimeException ex, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.CONFLICT, "Conflict", ex.getMessage(), request.getRequestURI(), null);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request) {
-        String message = "Violação de integridade de dados (ex: registro já existe ou possui dependências).";
+        String message = mensagemParaViolacao(ex);
         return buildErrorResponse(HttpStatus.CONFLICT, "Conflict", message, request.getRequestURI(), null);
+    }
+
+    private String mensagemParaViolacao(DataIntegrityViolationException ex) {
+        String constraintName = extrairNomeConstraint(ex);
+        if (constraintName != null && MENSAGENS_POR_CONSTRAINT.containsKey(constraintName)) {
+            return MENSAGENS_POR_CONSTRAINT.get(constraintName);
+        }
+
+        // Fallback defensivo: getConstraintName() pode vir nulo dependendo do driver/dialect;
+        // nesse caso tenta reconhecer a constraint pelo texto da mensagem da causa raiz.
+        Throwable causaMaisEspecifica = ex.getMostSpecificCause();
+        String mensagemCausa = causaMaisEspecifica != null ? causaMaisEspecifica.getMessage() : null;
+        if (mensagemCausa != null) {
+            for (Map.Entry<String, String> entrada : MENSAGENS_POR_CONSTRAINT.entrySet()) {
+                if (mensagemCausa.contains(entrada.getKey())) {
+                    return entrada.getValue();
+                }
+            }
+        }
+
+        return MENSAGEM_GENERICA_INTEGRIDADE;
+    }
+
+    private String extrairNomeConstraint(Throwable ex) {
+        Throwable atual = ex;
+        while (atual != null) {
+            if (atual instanceof ConstraintViolationException cve) {
+                return cve.getConstraintName();
+            }
+            atual = atual.getCause();
+        }
+        return null;
     }
 
     @ExceptionHandler(PessoaNaoEncontradaException.class)

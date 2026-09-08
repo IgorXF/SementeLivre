@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.ProprietarioCreateRequestDTO;
 import com.example.demo.model.Proprietario;
 import com.example.demo.model.TipoDocumento;
+import com.example.demo.exception.RgJaCadastradoException;
 import com.example.demo.service.PessoaService;
 import com.example.demo.service.ProprietarioService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -101,7 +101,7 @@ public class ProprietarioControllerTest {
                 "}";
 
         when(proprietarioService.criar(any(ProprietarioCreateRequestDTO.class)))
-                .thenThrow(new DataIntegrityViolationException("RG já cadastrado no sistema."));
+                .thenThrow(new RgJaCadastradoException("RG já cadastrado no sistema."));
 
         mockMvc.perform(post("/api/proprietarios")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +109,7 @@ public class ProprietarioControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value(409))
                 .andExpect(jsonPath("$.error").value("Conflict"))
-                .andExpect(jsonPath("$.message").value("Violação de integridade de dados (ex: registro já existe ou possui dependências)."));
+                .andExpect(jsonPath("$.message").value("RG já cadastrado no sistema."));
     }
 
     @Test
