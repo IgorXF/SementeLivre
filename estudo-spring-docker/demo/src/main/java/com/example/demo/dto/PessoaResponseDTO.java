@@ -12,6 +12,7 @@ public class PessoaResponseDTO {
     private String nome;
     private String telefone;
     private String email;
+    private LogradouroDTO endereco;
     private LocalDateTime dataCadastro;
     private LocalDateTime dataUltimaAlteracao;
     private String tipoPessoa;
@@ -64,6 +65,14 @@ public class PessoaResponseDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public LogradouroDTO getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(LogradouroDTO endereco) {
+        this.endereco = endereco;
     }
 
     public LocalDateTime getDataCadastro() {

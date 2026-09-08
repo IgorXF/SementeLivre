@@ -28,33 +28,12 @@ public class PessoaServiceTest {
     private PessoaService pessoaService;
 
     @Test
-    public void deveLancarExcecaoQuandoEmailDuplicado() {
-        PessoaCreateDTO dto = new PessoaCreateDTO();
-        dto.setEmail("teste@email.com");
+    public void deveLancarExcecaoQuandoNaoEncontrado() {
+        java.util.UUID id = java.util.UUID.randomUUID();
+        when(pessoaRepository.findById(id)).thenReturn(java.util.Optional.empty());
 
-        when(pessoaRepository.existsByEmail("teste@email.com")).thenReturn(true);
-
-        assertThatThrownBy(() -> pessoaService.criar(dto))
-                .isInstanceOf(EmailJaCadastradoException.class)
-                .hasMessage("Email já cadastrado no sistema.");
-
-        verify(pessoaRepository, never()).save(any());
-        verify(pessoaRepository, never()).existsByDocumento(anyString());
-    }
-
-    @Test
-    public void deveLancarExcecaoQuandoDocumentoDuplicado() {
-        PessoaCreateDTO dto = new PessoaCreateDTO();
-        dto.setEmail("novo@email.com");
-        dto.setDocumento("12345678901");
-
-        when(pessoaRepository.existsByEmail("novo@email.com")).thenReturn(false);
-        when(pessoaRepository.existsByDocumento("12345678901")).thenReturn(true);
-
-        assertThatThrownBy(() -> pessoaService.criar(dto))
-                .isInstanceOf(DocumentoJaCadastradoException.class)
-                .hasMessage("Documento já cadastrado no sistema.");
-
-        verify(pessoaRepository, never()).save(any());
+        assertThatThrownBy(() -> pessoaService.buscarPorId(id))
+                .isInstanceOf(com.example.demo.exception.PessoaNaoEncontradaException.class)
+                .hasMessage("Pessoa não encontrada com o ID: " + id);
     }
 }

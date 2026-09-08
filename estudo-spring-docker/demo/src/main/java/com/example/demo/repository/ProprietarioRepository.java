@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface ProprietarioRepository extends JpaRepository<Proprietario, UUID> {
+    boolean existsByRg(String rg);
 }
