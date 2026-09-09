@@ -4,7 +4,7 @@ import com.sementelivre.backend.entity.enums.TipoDocumento;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class UsuarioResponseDTO {
+public class ProprietarioResponseDTO {
 
     private UUID id;
     private TipoDocumento tipoDocumento;
@@ -16,6 +16,8 @@ public class UsuarioResponseDTO {
     private LocalDateTime dataCadastro;
     private LocalDateTime dataUltimaAlteracao;
     private String tipoPessoa;
+    private String rg;
+    private boolean exibirNoSitePublico;
 
     public UUID getId() {
         return id;
@@ -95,5 +97,21 @@ public class UsuarioResponseDTO {
 
     public void setTipoPessoa(String tipoPessoa) {
         this.tipoPessoa = tipoPessoa;
+    }
+
+    public String getRg() {
+        return rg;
+    }
+
+    public void setRg(String rg) {
+        this.rg = rg;
+    }
+
+    public boolean isExibirNoSitePublico() {
+        return exibirNoSitePublico;
+    }
+
+    public void setExibirNoSitePublico(boolean exibirNoSitePublico) {
+        this.exibirNoSitePublico = exibirNoSitePublico;
     }
 }

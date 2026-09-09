@@ -1,21 +1,62 @@
-package com.sementelivre.backend.dto;
+package com.sementelivre.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sementelivre.backend.entity.enums.TipoDocumento;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class UsuarioResponseDTO {
+@Entity
+@Table(name = "pessoa_t")
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Pessoa {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_documento", nullable = false, length = 10)
     private TipoDocumento tipoDocumento;
+
+    @Column(nullable = false, length = 14)
     private String documento;
+
+    @Column(nullable = false, length = 150)
     private String nome;
+
+    @Column(length = 15)
     private String telefone;
+
+    @Column(nullable = false, unique = true)
     private String email;
-    private LogradouroDTO endereco;
+
+    @JsonIgnore
+    @Column(name = "senha_hash", nullable = false)
+    private String senhaHash;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "logradouro_id")
+    private Logradouro logradouro;
+
+    @Column(name = "data_cadastro", nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
+
+    @Column(name = "data_ultima_alteracao", nullable = false)
     private LocalDateTime dataUltimaAlteracao;
-    private String tipoPessoa;
+
+    @PrePersist
+    public void prePersist() {
+        this.dataCadastro = LocalDateTime.now();
+        this.dataUltimaAlteracao = this.dataCadastro;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.dataUltimaAlteracao = LocalDateTime.now();
+    }
+
+    // Getters and Setters
 
     public UUID getId() {
         return id;
@@ -65,12 +106,20 @@ public class UsuarioResponseDTO {
         this.email = email;
     }
 
-    public LogradouroDTO getEndereco() {
-        return endereco;
+    public String getSenhaHash() {
+        return senhaHash;
     }
 
-    public void setEndereco(LogradouroDTO endereco) {
-        this.endereco = endereco;
+    public void setSenhaHash(String senhaHash) {
+        this.senhaHash = senhaHash;
+    }
+
+    public Logradouro getLogradouro() {
+        return logradouro;
+    }
+
+    public void setLogradouro(Logradouro logradouro) {
+        this.logradouro = logradouro;
     }
 
     public LocalDateTime getDataCadastro() {
@@ -87,13 +136,5 @@ public class UsuarioResponseDTO {
 
     public void setDataUltimaAlteracao(LocalDateTime dataUltimaAlteracao) {
         this.dataUltimaAlteracao = dataUltimaAlteracao;
-    }
-
-    public String getTipoPessoa() {
-        return tipoPessoa;
-    }
-
-    public void setTipoPessoa(String tipoPessoa) {
-        this.tipoPessoa = tipoPessoa;
     }
 }

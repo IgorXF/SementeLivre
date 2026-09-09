@@ -4,7 +4,7 @@ import com.sementelivre.backend.entity.enums.TipoDocumento;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class UsuarioResponseDTO {
+public class PessoaResponseDTO {
 
     private UUID id;
     private TipoDocumento tipoDocumento;
@@ -16,6 +16,8 @@ public class UsuarioResponseDTO {
     private LocalDateTime dataCadastro;
     private LocalDateTime dataUltimaAlteracao;
     private String tipoPessoa;
+
+    // Getters and Setters
 
     public UUID getId() {
         return id;
