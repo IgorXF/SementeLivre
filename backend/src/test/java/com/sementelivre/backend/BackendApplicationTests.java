@@ -1,4 +1,4 @@
-package com.sementeLivre.backend;
+package com.sementelivre.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
