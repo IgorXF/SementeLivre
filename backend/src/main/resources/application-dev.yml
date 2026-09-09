@@ -1,27 +1,11 @@
 spring:
   datasource:
-    url: jdbc:postgresql://ep-small-cake-a5uox49w-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require
-    username: neondb_owner
-    password: npg_4B0vxLMKofRm
+    url: jdbc:postgresql://localhost:5433/devdb
+    username: devuser
+    password: devpassword
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
   flyway: 
     enabled: true
-  mail:
-    host: ${MAIL_HOST:sandbox.smtp.mailtrap.io}
-    port: ${MAIL_PORT:2525}
-    username: ${MAIL_USERNAME:seu_usuario}
-    password: ${MAIL_PASSWORD:sua_senha}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
-jwt:
-  secret: ${JWT_SECRET:sementeLivreChaveSecretaSuperSeguraComMaisDe256Bits1234567890!}
-  expiration: 1800000 # 30 minutos em ms
-  refresh-expiration-days: 7
