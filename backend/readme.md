@@ -68,7 +68,33 @@ Ou Maven Wrapper:
 
 Teste inicia contexto Spring, aplica migrations Flyway e persiste/consulta grafo de `Comunidade` e `Propriedade` em PostgreSQL real.
 
-## 5. Configuração do Banco de Dados
+## 5. Swagger/OpenAPI e CORS
+
+Com aplicação rodando, acesse:
+
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- Swagger UI direto: `http://localhost:8080/swagger-ui/index.html`
+- Documento JSON: `http://localhost:8080/v3/api-docs`
+
+Em ambiente `dev`, CORS permite somente:
+
+- `http://localhost:3000` (`front-app`)
+- `http://localhost:3001` (`front-site`)
+
+Métodos permitidos: `GET`, `POST`, `PUT`, `PATCH`, `DELETE` e `OPTIONS`. Origem externa não recebe autorização CORS.
+
+Backend ainda não possui controllers REST. Por isso, documento OpenAPI lista metadados e schemas DTO, mas `paths` fica vazio até endpoints serem implementados.
+
+Teste preflight:
+
+```bash
+curl -i -X OPTIONS http://localhost:8080/v3/api-docs -H "Origin: http://localhost:3000" -H "Access-Control-Request-Method: GET"
+```
+
+## 6. Configuração do Banco de Dados
+
+PostgreSQL e aplicação rodam no Docker Compose. As credenciais de desenvolvimento estão definidas em docker-compose.yml.
+O profile `dev` conecta à porta interna `5432` quando aplicação roda no Compose e à porta `5433` quando aplicação roda no host. DBeaver e DataGrip usam `localhost:5433`.
 PostgreSQL e aplicação rodam no Docker Compose. As credenciais de desenvolvimento estão definidas em docker-compose.yml.
 O profile `dev` conecta à porta interna `5432` quando aplicação roda no Compose e à porta `5433` quando aplicação roda no host. DBeaver e DataGrip usam `localhost:5433`.
 
